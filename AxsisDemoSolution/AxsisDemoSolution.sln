@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AxsisDemoProject", "AxsisDemoProject\AxsisDemoProject.csproj", "{DED8D3C4-DB2A-434E-875C-49931A0BA4A6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DED8D3C4-DB2A-434E-875C-49931A0BA4A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DED8D3C4-DB2A-434E-875C-49931A0BA4A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DED8D3C4-DB2A-434E-875C-49931A0BA4A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DED8D3C4-DB2A-434E-875C-49931A0BA4A6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C9281439-CE1D-4E32-A78C-9F0CEE4F1B03}
+	EndGlobalSection
+EndGlobal
