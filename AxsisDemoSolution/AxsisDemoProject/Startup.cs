@@ -1,8 +1,13 @@
+using AxsisDemoProject.Controllers.Domain.UserSection.Adapters;
+using AxsisDemoProject.Controllers.Domain.UserSection.Ports;
+using AxsisDemoProject.Controllers.Domain.DataLayer;
+using AxsisDemoProject.Controllers.Domain.UserSection.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,6 +27,20 @@ namespace AxsisDemoProject
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddDbContext<AxsisDemoContext>(options => {
+                var connection_string = Configuration.GetConnectionString("AxsisDemoDatabase");
+                options.UseSqlServer(connection_string);
+            });
+
+            services.AddTransient<IUserRepository, UserRepository>();
+
+            services.AddScoped(
+                factory => {
+                    var userRepository = factory.GetService<IUserRepository>();
+                    return new UserService(userRepository);
+                }
+                );
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
