@@ -1,14 +1,18 @@
-﻿using System;
+﻿using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Net.Mail;
+using System.Text.RegularExpressions;
 
 namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
 {
     public class User : IEquatable<User>
     {
-        public string Id { get; private set; }
+        public int Id { get; private set; }
         public string Name { get; private set; }
         public string Email { get; private set; }
         public string Password { get; private set; }
@@ -19,13 +23,18 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
 
 
         private User() { }
-        public User(string id, string name, string email, string password, bool status, string sex, DateTime creationDate)
+        public User(int id, string name, string email, string password, bool status, string sex, DateTime creationDate)
         {
             Id = id;
             Name = name; Email = email;
             Password = password; Status = status;
             CreationDate = creationDate;
             Sex = sex;
+        }
+
+        public User Disable()
+        {
+            return new User(Id, Name, Email, Password, false, Sex, CreationDate);
         }
 
         public bool ShouldBeAdded() { return true; }
@@ -41,6 +50,30 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
                 && Status == other.Status
                 && Sex == other.Sex
                 && CreationDate == other.CreationDate);
+        }
+
+        public bool IsPasswordValid()
+        {
+            var regularExpressionsToMatch = new string[]
+            {
+                ".{7,}",            // at least 7 characters
+                @"(?=.*\d)",        // at least has one number
+                @"(?=[a-z])",       // at least has one lowercase letter
+                @"(?=[A-Z])"        // at least has one capital letter
+
+            };
+            var allMatched = regularExpressionsToMatch
+                .All(
+                expression => Regex.IsMatch(Password, expression)
+                );
+
+            return allMatched;
+        }
+
+        public bool IsEmailValid()
+        {
+            string Rfc5322CompliantEmailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
+            return Regex.IsMatch(Email, Rfc5322CompliantEmailRegex);
         }
     }
 }

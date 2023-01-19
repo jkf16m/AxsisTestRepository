@@ -1,5 +1,6 @@
 ﻿using AxsisDemoProject.Controllers.Domain.UserSection.Model;
 using AxsisDemoProject.Controllers.Domain.UserSection.Ports;
+using AxsisDemoProject.Controllers.Domain.UserSection.Service.Results;
 using System;
 using System.Threading.Tasks;
 
@@ -17,16 +18,27 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
          * This method adds a new user, but before that, executes all of the validations
          * contained in the User object
          */
-        public async Task<bool> AddNewUserAsync(User newUser)
+        public async Task<AddingUserResult> AddNewUserAsync(User newUser)
         {
             var validationResult = newUser.ShouldBeAdded();
 
+            var emailIsValid = newUser.IsEmailValid();
+            var passwordIsValid = newUser.IsPasswordValid();
+            var emailAlreadyUsed = await _userRepository.IsEmailAlreadyUserAsync(newUser.Email);
 
-            if (validationResult)
+
+            var result = new AddingUserResult(
+                emailAlreadyUsed,
+                false,
+                emailIsValid,
+                passwordIsValid
+            );
+
+            if (result.shouldBeAdded)
                 await _userRepository.AddAsync(newUser);
 
 
-            return validationResult;
+            return result;
         }
 
         /**

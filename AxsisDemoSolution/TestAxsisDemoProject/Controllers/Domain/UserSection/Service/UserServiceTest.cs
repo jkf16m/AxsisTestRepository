@@ -1,0 +1,60 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using AxsisDemoProject.Controllers.Domain.UserSection.Model;
+using AxsisDemoProject.Controllers.Domain.UserSection.Service;
+using AxsisDemoProject.Controllers.Domain.UserSection.Service.Results;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters;
+
+namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
+{
+    [TestClass]
+    internal class UserServiceTest
+    {
+        private UserService userService;
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            userService = new UserService(new UserMockRepository());
+        }
+
+        [TestMethod]
+        public async Task AddNewUserWithAlreadyUsedEmailAndInvalidPasswordTestAsync()
+        {
+            var newUser = new User(2, "hola", "jkf16m@gmail.com", "123", false, "female", DateTime.MinValue);
+            var result = await userService.AddNewUserAsync(newUser);
+            Assert.AreEqual(new AddingUserResult(
+                    emailAlreadyUsed: true,
+                    idRepeated: false,
+                    validEmail: true,
+                    validPassword: false
+             ),result);
+        }
+
+        [TestMethod]
+        public async Task AddNewUserWithValidEmailAndPassword()
+        {
+            var newUser = new User(
+                2, "hola",
+                "jkf20m@gmail.com",
+                "asjdlñfj 287@ JAJ",
+                true,
+                "male",
+                DateTime.MaxValue
+                );
+            var result = await userService.AddNewUserAsync(newUser);
+            Assert.AreEqual(
+                new AddingUserResult(
+                    emailAlreadyUsed: false,
+                    idRepeated: false,
+                    validEmail: true,
+                    validPassword: true
+                    )
+                ,result) ;
+        }
+    }
+}

@@ -8,11 +8,13 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Ports
         Task AddAsync(User newUser);
         Task DisableAsync(int userIdToDisable);
         Task<bool> HasAnyAsync(User userToUpdate);
+        Task<bool> IsEmailAlreadyUserAsync(string email);
+
         /**
-         * <summary>
-         * This method, authorizes an user to its own resources
-         * </summary>
-         */
+* <summary>
+* This method, authorizes an user to its own resources
+* </summary>
+*/
         Task<bool> ShouldBeAuthorized(User user);
         /**
          <summary>
