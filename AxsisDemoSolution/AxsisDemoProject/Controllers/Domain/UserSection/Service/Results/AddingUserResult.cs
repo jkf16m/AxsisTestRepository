@@ -15,6 +15,11 @@
             bool validPassword
             )
         {
+            this.emailAlreadyUsed = emailAlreadyUsed;
+            this.idRepeated = idRepeated;
+            this.validEmail = validEmail;
+            this.validPassword = validPassword;
+
             shouldBeAdded = (
                 emailAlreadyUsed == false
                 && idRepeated == false

@@ -1,6 +1,7 @@
 ﻿using AxsisDemoProject.Controllers.Domain.UserSection.Model;
 using AxsisDemoProject.Controllers.Domain.UserSection.Ports;
 using AxsisDemoProject.Controllers.Domain.UserSection.Service.Results;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using System;
 using System.Threading.Tasks;
 
@@ -20,7 +21,6 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
          */
         public async Task<AddingUserResult> AddNewUserAsync(User newUser)
         {
-            var validationResult = newUser.ShouldBeAdded();
 
             var emailIsValid = newUser.IsEmailValid();
             var passwordIsValid = newUser.IsPasswordValid();
@@ -48,15 +48,23 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
          * If the password doesn't match with the stored one, it won't update this user.
          * </summary>
          */
-        public async Task<bool> UpdateUserAsync(User userToUpdate)
+        public async Task<UpdatingUserResult> UpdateUserAsync(User userToUpdate)
         {
             if (
                 await _userRepository.HasAnyAsync(userToUpdate)
             )
             {
+                
+            }
+            var updatingUserResult = new UpdatingUserResult(
+                bothPasswordsMatched: await _userRepository.ShouldBeAuthorized(userToUpdate)
+            );
+
+            if (updatingUserResult.shouldBeUpdated)
+            {
                 await _userRepository.UpdateAsync(userToUpdate);
             }
-            return true;
+            return updatingUserResult;
         }
 
         public async Task DisableUserAsync(int userIdToDisable)

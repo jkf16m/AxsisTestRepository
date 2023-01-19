@@ -12,7 +12,7 @@ using TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters;
 namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
 {
     [TestClass]
-    internal class UserServiceTest
+    public class UserServiceTest
     {
         private UserService userService;
 
@@ -32,7 +32,7 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
                     idRepeated: false,
                     validEmail: true,
                     validPassword: false
-             ),result);
+             ).shouldBeAdded,result.shouldBeAdded);
         }
 
         [TestMethod]
@@ -53,8 +53,36 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
                     idRepeated: false,
                     validEmail: true,
                     validPassword: true
-                    )
-                ,result) ;
+                    ).shouldBeAdded
+                ,result.shouldBeAdded) ;
+        }
+
+        [TestMethod]
+        public async Task UpdateExistingUserWithTheSameId()
+        {
+            var updateDanielUser = new User(
+                1, "Daniel", "jkf19m@gmail.com", "1234", false, sex: "female", DateTime.MinValue);
+
+            var result = await userService.UpdateUserAsync(updateDanielUser);
+
+            Assert.AreEqual(
+                new UpdatingUserResult(true).shouldBeUpdated
+                , result.shouldBeUpdated
+                );
+        }
+
+        [TestMethod]
+        public async Task WontUpdateUserIfSentPasswordAndStoredPasswordDoesntMatch()
+        {
+            var updateDanielUser = new User(
+                1, "Daniel", "jkf19m@gmail.com", "123224", false, sex: "female", DateTime.MinValue);
+
+            var result = await userService.UpdateUserAsync(updateDanielUser);
+
+            Assert.AreEqual(
+                new UpdatingUserResult(false).shouldBeUpdated
+                , result.shouldBeUpdated
+                );
         }
     }
 }

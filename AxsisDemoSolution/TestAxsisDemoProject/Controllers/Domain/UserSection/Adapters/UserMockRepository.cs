@@ -62,7 +62,9 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters
 
         public Task<bool> ShouldBeAuthorized(User user)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(
+                _users.Any(u => u.Id == user.Id && u.Password == user.Password)
+                ) ;
         }
 
         public Task<bool> ShouldHaveBasicAuthenticationAsync(User user)
@@ -72,7 +74,20 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters
 
         public Task UpdateAsync(User userToUpdate)
         {
-            throw new NotImplementedException();
+            _users = _users.Select(u =>
+            {
+                if(u.Id == userToUpdate.Id)
+                {
+                    return new User(u.Id, userToUpdate.Name, userToUpdate.Email, userToUpdate.Password,
+                        userToUpdate.Status, userToUpdate.Sex, userToUpdate.CreationDate);
+                }
+                else
+                {
+                    return u;
+                }
+            }).ToList();
+
+            return Task.CompletedTask;
         }
     }
 }
