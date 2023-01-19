@@ -24,6 +24,8 @@
 
   <ItemGroup>
     <Folder Include="Controllers\Domain\Libs\" />
+    <Folder Include="Controllers\Domain\SharedSection\Model\" />
+    <Folder Include="Controllers\Domain\SharedSection\Services\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

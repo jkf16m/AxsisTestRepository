@@ -29,9 +29,18 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
             return validationResult;
         }
 
+        /**
+         * <summary>
+         * This method updates the corresponding user from the Id, with all the values
+         * ONLY if the passwords and Id match.
+         * If the password doesn't match with the stored one, it won't update this user.
+         * </summary>
+         */
         public async Task<bool> UpdateUserAsync(User userToUpdate)
         {
-            if (await _userRepository.HasAnyAsync(userToUpdate))
+            if (
+                await _userRepository.HasAnyAsync(userToUpdate)
+            )
             {
                 await _userRepository.UpdateAsync(userToUpdate);
             }
@@ -42,5 +51,6 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
         {
             await _userRepository.DisableAsync(userIdToDisable);
         }
+
     }
 }

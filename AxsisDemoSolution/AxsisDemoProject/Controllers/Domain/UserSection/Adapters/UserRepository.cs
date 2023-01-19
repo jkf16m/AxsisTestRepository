@@ -28,6 +28,16 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Adapters
             throw new System.NotImplementedException();
         }
 
+        public Task<bool> ShouldBeAuthorized(User user)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<bool> ShouldHaveBasicAuthenticationAsync(User user)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public Task UpdateAsync(User userToUpdate)
         {
             throw new System.NotImplementedException();

@@ -33,14 +33,11 @@ namespace AxsisDemoProject
                 options.UseSqlServer(connection_string);
             });
 
+            
+
             services.AddTransient<IUserRepository, UserRepository>();
 
-            services.AddScoped(
-                factory => {
-                    var userRepository = factory.GetService<IUserRepository>();
-                    return new UserService(userRepository);
-                }
-                );
+            services.AddScoped<UserService>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
