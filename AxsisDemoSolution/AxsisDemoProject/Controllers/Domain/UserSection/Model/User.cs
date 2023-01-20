@@ -86,7 +86,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
         {
             if (IsPasswordEncrypted) return "";
 
-            Password = encryptionAlgorithmFunction($"{Email}:{Password}:{CreationDate}");
+            Password = encryptionAlgorithmFunction($"{Id}:{Email}:{Password}");
             IsPasswordEncrypted = true;
 
             return Password;

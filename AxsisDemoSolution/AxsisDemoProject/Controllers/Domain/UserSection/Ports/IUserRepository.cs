@@ -13,7 +13,13 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Ports
          * <returns>Returns true if the user could be disabled, and false if the given id of user doesn't exist</returns>
          */
         Task<bool> DisableAsync(int userIdToDisable);
-        Task<bool> HasAnyAsync(User userToUpdate);
+        /**
+         * <summary>Checks if there is an existing user with this assigned email and encrypted password</summary>
+         * <param name="email">Email of the user to look for</param>
+         * <param name="password">Password ALREADY ENCRYPTED</param>
+         * <returns>True if the repository has the user else False</returns>
+         */
+        Task<bool> HasAnyAsync(string email, string password);
         Task<bool> IsEmailAlreadyUsedAsync(string email);
 
          /**
@@ -24,5 +30,10 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Ports
         Task<bool> ShouldHaveBasicAuthenticationAsync(User user);
         Task UpdateAsync(User userToUpdate);
         Task<bool> ShouldBeAuthorized(User userToUpdate);
+
+        /**
+         * <summary>Gets email of the user of the specified id</summary>
+         */
+        Task<string> GetEmailById(int id);
     }
 }

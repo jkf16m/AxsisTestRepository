@@ -23,7 +23,12 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Adapters
             throw new System.NotImplementedException();
         }
 
-        public Task<bool> HasAnyAsync(User userToUpdate)
+        public Task<string> GetEmailById(int id)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<bool> HasAnyAsync(string email, string password)
         {
             throw new System.NotImplementedException();
         }

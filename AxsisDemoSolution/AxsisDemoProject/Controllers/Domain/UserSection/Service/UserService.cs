@@ -56,17 +56,28 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
          */
         public async Task<UpdatingUserResult> UpdateUserAsync(User userToUpdate)
         {
-            if (
-                await _userRepository.HasAnyAsync(userToUpdate)
-            )
-            {
-                
-            }
+            // first, creates a new instance based on the stored email by the user, only Id and Email needed
+            var storedUserToUpdateEmail = await _userRepository.GetEmailById(userToUpdate.Id);
+
+            var storedUser = new User(userToUpdate.Id, userToUpdate.Name, storedUserToUpdateEmail, userToUpdate.Password, userToUpdate.Status, userToUpdate.Sex, userToUpdate.CreationDate);
+            // here this temporal user data is used to encrypt the password to match it with some row in the database
+            storedUser.EncryptPassword(str => _encryptorService.Encrypt(str));
+
+            // if both passwords matches, then it it will return true here, so it would be safe to update this user
+            // with this info.
+            bool bothPasswordsMatched = await _userRepository.HasAnyAsync(storedUser.Email, storedUser.Password);
+
+
+            
             var updatingUserResult = new UpdatingUserResult(
-                bothPasswordsMatched: await _userRepository.ShouldBeAuthorized(userToUpdate)
+                bothPasswordsMatched: bothPasswordsMatched
             );
 
-            if (updatingUserResult.shouldBeUpdated)
+
+
+            userToUpdate.EncryptPassword(str => _encryptorService.Encrypt(str));
+
+            if (updatingUserResult.shouldBeUpdated && userToUpdate.IsPasswordEncrypted)
             {
                 await _userRepository.UpdateAsync(userToUpdate);
             }

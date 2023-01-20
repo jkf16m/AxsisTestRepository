@@ -22,7 +22,22 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
         public void Initialize()
         {
             _encryptorService = new EncryptorService();
-            userService = new UserService(new UserMockRepository(), _encryptorService);
+            var users = new List<User>()
+                {
+                    new User(
+                        id: 1,
+                        name: "José Daniel",
+                        email: "jkf16m@gmail.com",
+                        password: "1234",
+                        status: true,
+                        sex: "male",
+                        creationDate: DateTime.MaxValue
+                        )
+                };
+            users.ForEach(q => q.EncryptPassword(str => _encryptorService.Encrypt(str)));
+            var mockRepository = new UserMockRepository(users);
+
+            userService = new UserService(mockRepository, _encryptorService);
         }
 
         [TestMethod]
