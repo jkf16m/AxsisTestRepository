@@ -1,4 +1,4 @@
-import {User} from '../entities/User'
+import {User} from '../services/entities/User'
 
 // interfaces of actions
 

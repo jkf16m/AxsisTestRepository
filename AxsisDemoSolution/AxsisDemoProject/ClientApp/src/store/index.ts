@@ -1,9 +1,11 @@
 import * as WeatherForecasts from './WeatherForecasts';
 import * as Counter from './Counter';
+import * as TokenStore from './TokenStore';
 
 // The top-level state object
 export interface ApplicationState {
     counter: Counter.CounterState | undefined;
+    token: TokenStore.TokenState | undefined;
     weatherForecasts: WeatherForecasts.WeatherForecastsState | undefined;
 }
 
@@ -12,6 +14,7 @@ export interface ApplicationState {
 // acts on the corresponding ApplicationState property type.
 export const reducers = {
     counter: Counter.reducer,
+    token: TokenStore.reducer,
     weatherForecasts: WeatherForecasts.reducer
 };
 
