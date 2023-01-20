@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using AxsisDemoProject.Controllers.Domain.SharedSection.Services;
 
 namespace AxsisDemoProject
 {
@@ -37,6 +38,7 @@ namespace AxsisDemoProject
 
             services.AddTransient<IUserRepository, UserRepository>();
 
+            services.AddScoped<EncryptorService>();
             services.AddScoped<UserService>();
 
             // In production, the React files will be served from this directory
