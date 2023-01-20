@@ -18,7 +18,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Adapters
             throw new System.NotImplementedException();
         }
 
-        public Task DisableAsync(int userIdToDisable)
+        public Task<bool> DisableAsync(int userIdToDisable)
         {
             throw new System.NotImplementedException();
         }

@@ -84,5 +84,25 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
                 , result.shouldBeUpdated
                 );
         }
+
+        [TestMethod]
+        public async Task DeleteUserWithTheGivenIdNoMatterWhichUserRequestedIt()
+        {
+            var deletedId = 1;
+            var result = await userService.DisableUserAsync(deletedId);
+            //this is a valid user
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public async Task TryToDeleteUserWithTheGivenIdButItDoesntExist()
+        {
+            var deletedId = 99;
+            var result = await userService.DisableUserAsync(deletedId);
+            // this will try to delete a user in the mock repository but it doesn't exist
+
+            Assert.IsFalse(result);
+        }
     }
 }

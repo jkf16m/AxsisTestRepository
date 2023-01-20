@@ -32,20 +32,15 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters
             return Task.CompletedTask;
         }
 
-        public Task DisableAsync(int userIdToDisable)
+        public Task<bool> DisableAsync(int userIdToDisable)
         {
-            _users = _users.Select(user => {
-                if (user.Id == userIdToDisable)
-                {
-                    return user.Disable();
-                }
-                else
-                {
-                    return user;
-                }
-            }).ToList();
+            var userToDisable = _users.FirstOrDefault(q => q.Id == userIdToDisable);
 
-            return Task.CompletedTask;
+            if (userToDisable == null) return Task.FromResult(false);
+
+            userToDisable.Disable();
+
+            return Task.FromResult(true);
         }
 
         public Task<bool> HasAnyAsync(User userToUpdate)

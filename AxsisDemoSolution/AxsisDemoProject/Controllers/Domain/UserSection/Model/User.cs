@@ -34,7 +34,8 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
 
         public User Disable()
         {
-            return new User(Id, Name, Email, Password, false, Sex, CreationDate);
+            Status = false;
+            return this;
         }
 
         public bool ShouldBeAdded() { return true; }

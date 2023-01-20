@@ -67,9 +67,14 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
             return updatingUserResult;
         }
 
-        public async Task DisableUserAsync(int userIdToDisable)
+        /**
+         * <summary>Disables the user with the given id in the parameter</summary>
+         * <param name="userIdToDisable">The ID to the user to disable</param>
+         * <returns>Instance of the disabled user</returns>
+         */
+        public async Task<bool> DisableUserAsync(int userIdToDisable)
         {
-            await _userRepository.DisableAsync(userIdToDisable);
+            return await _userRepository.DisableAsync(userIdToDisable);
         }
 
     }
