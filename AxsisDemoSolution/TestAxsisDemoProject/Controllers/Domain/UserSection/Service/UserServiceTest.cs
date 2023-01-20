@@ -72,7 +72,7 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
             var result = await userService.UpdateUserAsync(updateDanielUser);
 
             Assert.AreEqual(
-                new UpdatingUserResult(true).shouldBeUpdated
+                new UpdatingUserResult(true,true).shouldBeUpdated
                 , result.shouldBeUpdated
                 );
         }
@@ -86,7 +86,7 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
             var result = await userService.UpdateUserAsync(updateDanielUser);
 
             Assert.AreEqual(
-                new UpdatingUserResult(false).shouldBeUpdated
+                new UpdatingUserResult(false,true).shouldBeUpdated
                 , result.shouldBeUpdated
                 );
         }

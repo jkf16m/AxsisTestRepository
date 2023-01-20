@@ -3,7 +3,9 @@
     public class UpdatingUserResultDTO
     {
         public UpdatingUserResultDTO() { }
-        public bool BothPasswordsMatchet { get; set; }
+        public bool BothPasswordsMatched { get; set; }
         public bool ShouldBeUpdated { get; set; }
+
+        public bool WasPasswordEncrypted { get; set; }
     }
 }

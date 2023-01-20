@@ -36,6 +36,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
             set {
                 _encryptionPasswordAlgorithm= value;
                 EncryptedPassword = _encryptionPasswordAlgorithm?.Invoke($"{Id}:{Email}:{Password}") ?? "";
+                IsPasswordEncrypted = !EncryptedPassword.IsNullOrEmpty();
             }
         }
 

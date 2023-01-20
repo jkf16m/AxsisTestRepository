@@ -51,7 +51,7 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters
 
         public Task<User> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(_users.First(q => q.Id == id));
         }
 
         public Task<string> GetEmailById(int id)
