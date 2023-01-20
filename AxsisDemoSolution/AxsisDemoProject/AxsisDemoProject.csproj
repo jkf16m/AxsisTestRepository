@@ -26,6 +26,8 @@
 
   <ItemGroup>
     <Folder Include="Controllers\Domain\Libs\" />
+    <Folder Include="Controllers\Domain\SessionSection\Adapters\" />
+    <Folder Include="Controllers\Domain\SessionSection\Service\" />
     <Folder Include="Controllers\Domain\SharedSection\Model\" />
   </ItemGroup>
 

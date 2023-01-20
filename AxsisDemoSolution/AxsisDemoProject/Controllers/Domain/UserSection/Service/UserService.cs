@@ -39,7 +39,6 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
 
             if (result.shouldBeAdded)
             {
-                newUser.EncryptPassword(str=>_encryptorService.Encrypt(str));
                 await _userRepository.AddAsync(newUser);
             }
 
@@ -60,12 +59,11 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
             var storedUserToUpdateEmail = await _userRepository.GetEmailById(userToUpdate.Id);
 
             var storedUser = new User(userToUpdate.Id, userToUpdate.Name, storedUserToUpdateEmail, userToUpdate.Password, userToUpdate.Status, userToUpdate.Sex, userToUpdate.CreationDate);
-            // here this temporal user data is used to encrypt the password to match it with some row in the database
-            storedUser.EncryptPassword(str => _encryptorService.Encrypt(str));
+            
 
             // if both passwords matches, then it it will return true here, so it would be safe to update this user
             // with this info.
-            bool bothPasswordsMatched = await _userRepository.HasAnyAsync(storedUser.Email, storedUser.Password);
+            bool bothPasswordsMatched = await _userRepository.HasAnyAsync(storedUser.Email, storedUser.EncryptedPassword);
 
 
             
@@ -73,9 +71,6 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
                 bothPasswordsMatched: bothPasswordsMatched
             );
 
-
-
-            userToUpdate.EncryptPassword(str => _encryptorService.Encrypt(str));
 
             if (updatingUserResult.shouldBeUpdated && userToUpdate.IsPasswordEncrypted)
             {

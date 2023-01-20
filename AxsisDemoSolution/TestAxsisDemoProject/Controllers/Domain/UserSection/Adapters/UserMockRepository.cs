@@ -38,7 +38,11 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters
             return Task.FromResult(_users.First(q => q.Id == id).Email);
         }
 
-        
+        public Task<int> GetIdByEmail(string email)
+        {
+            return Task.FromResult(_users.First(q => q.Email == email).Id);
+        }
+
         public Task<bool> HasAnyAsync(string email, string password)
         {
             return Task.FromResult(_users.Exists(user => user.Email == email && user.Password == password));

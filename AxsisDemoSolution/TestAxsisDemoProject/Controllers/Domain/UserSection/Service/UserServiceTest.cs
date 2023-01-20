@@ -34,7 +34,6 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
                         creationDate: DateTime.MaxValue
                         )
                 };
-            users.ForEach(q => q.EncryptPassword(str => _encryptorService.Encrypt(str)));
             var mockRepository = new UserMockRepository(users);
 
             userService = new UserService(mockRepository, _encryptorService);

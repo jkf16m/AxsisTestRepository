@@ -23,10 +23,28 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
         [NotMapped]
         public bool IsPasswordEncrypted {get; private set;}
 
+        [NotMapped]
+        public string EncryptedPassword { get; private set; }
+
+
+        private Func<string, string> _encryptionPasswordAlgorithm;
+        [NotMapped]
+        public Func<string, string> EncryptionPasswordAlgorithm {
+            get {
+                return _encryptionPasswordAlgorithm;
+            }
+            private set {
+                _encryptionPasswordAlgorithm= value;
+                EncryptedPassword = _encryptionPasswordAlgorithm?.Invoke($"{Id}:{Email}:{Password}") ?? "";
+            }
+        }
+
 
 
         private User() { }
-        public User(int id, string name, string email, string password, bool status, string sex, DateTime creationDate)
+        public User(int id, string name, string email, string password, bool status, string sex, DateTime creationDate,
+            Func<string, string> encryptionAlgorithmFunction = null
+            )
         {
             Id = id;
             Name = name; Email = email;
@@ -34,6 +52,8 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
             CreationDate = creationDate;
             Sex = sex;
             IsPasswordEncrypted = false;
+            EncryptionPasswordAlgorithm = encryptionAlgorithmFunction;
+            EncryptedPassword = EncryptionPasswordAlgorithm?.Invoke($"{Id}:{Email}:{Password}") ?? "";
         }
 
         public User Disable()
@@ -82,14 +102,5 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
         }
 
         
-        public string EncryptPassword(Func<string, string> encryptionAlgorithmFunction)
-        {
-            if (IsPasswordEncrypted) return "";
-
-            Password = encryptionAlgorithmFunction($"{Id}:{Email}:{Password}");
-            IsPasswordEncrypted = true;
-
-            return Password;
-        }
     }
 }

@@ -35,5 +35,9 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Ports
          * <summary>Gets email of the user of the specified id</summary>
          */
         Task<string> GetEmailById(int id);
+        /**
+         * <summary>Gets id of the user of the specified email</summary>
+         */
+        Task<int> GetIdByEmail(string email);
     }
 }
