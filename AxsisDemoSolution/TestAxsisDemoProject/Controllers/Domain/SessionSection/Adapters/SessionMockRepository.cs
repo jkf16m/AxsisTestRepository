@@ -6,13 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters
+namespace TestAxsisDemoProject.Controllers.Domain.SessionSection.Adapters
 {
     public class SessionMockRepository : ISessionRepository
     {
         private List<Session> _sessions;
-        public SessionMockRepository(List<Session> sessions) {
-            _sessions = sessions;
+        public SessionMockRepository()
+        {
+            _sessions = new List<Session>()
+            {
+                new Session("293ae30a478dd9a4f8098586ac1291e2edcfe9c4cb2088ee75013010f0b2229a", 1, DateTime.Now.AddDays(1))
+            };
         }
         public Task<Session> CreateSessionAsync(string token, int userId, DateTime expirationDate)
         {
@@ -23,7 +27,7 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters
                 );
             _sessions.Add(addedSession);
 
-            return Task.FromResult( addedSession );
+            return Task.FromResult(addedSession);
         }
 
         public Task<bool> ExpireSessionAsync(int userId, string token)
@@ -36,7 +40,7 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters
 
             _sessions.Remove(activeToken);
 
-            return Task.FromResult( true );
+            return Task.FromResult(true);
         }
     }
 }

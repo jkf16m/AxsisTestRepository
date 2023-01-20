@@ -31,10 +31,10 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
          * <returns>A token string, supposed to be stored by the client, it will be empty if the authentication wasn't
          * sucessful</returns>
          */
-        public async Task<string> AuthenticateAsync(string email, string password)
+        public async Task<string> AuthenticateAsync(string email, string password, DateTime tokenDate)
         {
             var userId = await _userRepository.GetIdByEmail(email);
-            var userTryingToLogIn = new User(userId, "", email, password, false, "", DateTime.MinValue);
+            var userTryingToLogIn = new User(userId, "", email, password, false, "", DateTime.MinValue, _encryptorService.Encrypt);
 
             if(await _userRepository.HasAnyAsync(userTryingToLogIn.Email, userTryingToLogIn.EncryptedPassword))
             {
@@ -42,9 +42,9 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
                     await _sessionRepository.CreateSessionAsync
                     (
                     // this is the session generated token, it will be regenerated each request
-                    $"{userTryingToLogIn.EncryptedPassword}:{DateTime.Now}"
+                    _encryptorService.Encrypt($"{userTryingToLogIn.EncryptedPassword}:{tokenDate}")
                     // this is the session generated token expiration date
-                    ,userTryingToLogIn.Id, DateTime.Now.AddDays(1)
+                    ,userTryingToLogIn.Id, tokenDate.AddDays(1)
                     )
                 ).Token;
             }

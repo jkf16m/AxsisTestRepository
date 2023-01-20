@@ -16,7 +16,7 @@ namespace AxsisDemoProject.Controllers.Domain.SharedSection.Services
             using (SHA256 sha256 = SHA256.Create())
             {
                 byte[] hashValue = sha256.ComputeHash(Encoding.UTF8.GetBytes(str));
-                return Convert.ToHexString(hashValue);
+                return Convert.ToHexString(hashValue).ToLower();
             }
         }
     }

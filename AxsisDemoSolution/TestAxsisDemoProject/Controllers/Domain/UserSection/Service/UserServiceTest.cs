@@ -22,19 +22,7 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
         public void Initialize()
         {
             _encryptorService = new EncryptorService();
-            var users = new List<User>()
-                {
-                    new User(
-                        id: 1,
-                        name: "José Daniel",
-                        email: "jkf16m@gmail.com",
-                        password: "1234",
-                        status: true,
-                        sex: "male",
-                        creationDate: DateTime.MaxValue
-                        )
-                };
-            var mockRepository = new UserMockRepository(users);
+            var mockRepository = new UserMockRepository();
 
             userService = new UserService(mockRepository, _encryptorService);
         }
