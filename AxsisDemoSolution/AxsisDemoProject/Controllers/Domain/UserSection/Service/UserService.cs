@@ -30,12 +30,12 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
          */
         public async Task<AddingUserResult> AddNewUserAsync(User newUser)
         {
-
+            // validations
             var emailIsValid = newUser.IsEmailValid();
             var passwordIsValid = newUser.IsPasswordValid();
             var emailAlreadyUsed = await _userRepository.IsEmailAlreadyUsedAsync(newUser.Email);
 
-
+            // store validations in object
             var result = new AddingUserResult(
                 emailAlreadyUsed,
                 false,
@@ -43,7 +43,14 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
                 passwordIsValid
             );
 
-            if (result.shouldBeAdded)
+            // configuration of user before adding it
+            newUser.UpdateDate(DateTime.Now);
+            newUser.EncryptionPasswordAlgorithm = _encryptorService.Encrypt;
+            var successfulPasswordEncryption = newUser.EncryptPassword();
+
+
+            // when everything has been set
+            if (result.shouldBeAdded && successfulPasswordEncryption)
             {
                 await _userRepository.AddAsync(newUser);
             }

@@ -33,7 +33,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
             get {
                 return _encryptionPasswordAlgorithm;
             }
-            private set {
+            set {
                 _encryptionPasswordAlgorithm= value;
                 EncryptedPassword = _encryptionPasswordAlgorithm?.Invoke($"{Id}:{Email}:{Password}") ?? "";
             }
@@ -84,7 +84,9 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
                 ".{7,}",            // at least 7 characters
                 @"(?=.*\d)",        // at least has one number
                 @"(?=[a-z])",       // at least has one lowercase letter
-                @"(?=[A-Z])"        // at least has one capital letter
+                @"(?=[A-Z])",       // at least has one capital letter
+                @"(?=[\!""\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\>\=\?\@\[\]\{\}\^\`\~\\_])"
+                                    // at least one symbol ^^^^^^
 
             };
             var allMatched = regularExpressionsToMatch
@@ -101,6 +103,19 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
             return Regex.IsMatch(Email, Rfc5322CompliantEmailRegex);
         }
 
-        
+        /**
+         * <summary>Mutates the property "Password" replacing it with the current value of "EncryptedPassword" only if EncryptedPassword is assigned or not null</summary>
+         */
+        public bool EncryptPassword()
+        {
+            if (EncryptedPassword.IsNullOrEmpty()) return false;
+
+            Password = EncryptedPassword; return true;
+        }
+
+        internal void UpdateDate(DateTime now)
+        {
+            CreationDate = now;
+        }
     }
 }

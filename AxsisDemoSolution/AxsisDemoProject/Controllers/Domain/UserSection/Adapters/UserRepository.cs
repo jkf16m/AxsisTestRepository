@@ -16,11 +16,11 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Adapters
             _axsisDemoContext = axsisDemoContext;
         }
 
-        public Task AddAsync(User newUser)
+        public async Task AddAsync(User newUser)
         {
-            _axsisDemoContext.AddAsync(newUser);
+            await _axsisDemoContext.AddAsync(newUser);
 
-            return Task.CompletedTask;
+            await _axsisDemoContext.SaveChangesAsync();
         }
 
         public async Task<bool> DisableAsync(int userIdToDisable)

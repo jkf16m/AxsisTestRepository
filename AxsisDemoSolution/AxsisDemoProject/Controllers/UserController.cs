@@ -29,7 +29,12 @@ namespace AxsisDemoProject.Controllers
         {
             var users = await _userService.GetUsersAsync();
 
-            var usersDTO = users.Select(q => _mapper.Map<UserDTO>(q));
+            var usersDTO = users.Select(q =>
+            {
+                var user = _mapper.Map<UserDTO>(q);
+                return user;
+            }
+            );
 
             return usersDTO;
         }
@@ -47,12 +52,12 @@ namespace AxsisDemoProject.Controllers
 
         // POST api/<UserController>
         [HttpPost]
-        public async Task<AddingUserResult> Post([FromBody] UserDTO user)
+        public async Task<AddingUserResultDTO> Post([FromBody] UserDTO user)
         {
             var userInstance = _mapper.Map<User>(user);
             var addingUserResult = await _userService.AddNewUserAsync(userInstance);
-
-            return addingUserResult;
+            var addingUserResultDTO = _mapper.Map<AddingUserResultDTO>(addingUserResult);
+            return addingUserResultDTO;
         }
 
         // PUT api/<UserController>/5
@@ -63,9 +68,9 @@ namespace AxsisDemoProject.Controllers
 
         // DELETE api/<UserController>/5
         [HttpDelete("{id}")]
-        public Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            return Task.FromResult(false);
+            return await _userService.DisableUserAsync(id);
         }
     }
 }
