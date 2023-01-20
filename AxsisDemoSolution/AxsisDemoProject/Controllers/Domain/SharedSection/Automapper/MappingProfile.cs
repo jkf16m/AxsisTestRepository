@@ -13,8 +13,8 @@ namespace AxsisDemoProject.Controllers.Domain.SharedSection.Automapper
             CreateMap<AddingUserResultDTO, AddingUserResult>().ReverseMap();
             CreateMap<UpdatingUserResultDTO, UpdatingUserResult>().ReverseMap();
             CreateMap<UserUpdateDTO, User>()
-                .ForMember(m => m.Email, o => o.MapFrom(n => n.CurrentEmail))
-                .ForMember(m => m.Password, o => o.MapFrom(n => n.CurrentPassword));
+                .ForMember(m => m.Email, o => o.MapFrom(n => n.NewEmail))
+                .ForMember(m => m.Password, o => o.MapFrom(n => n.NewPassword));
         }
     }
 }

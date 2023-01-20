@@ -16,9 +16,9 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
         public string Name { get; private set; }
         public string Email { get; private set; }
         public string Password { get; private set; }
-        public bool Status { get; private set; }
+        public bool? Status { get; private set; }
         public string Sex { get; private set; }
-        public DateTime CreationDate { get; private set; }
+        public DateTime? CreationDate { get; private set; }
 
         [NotMapped]
         public bool IsPasswordEncrypted {get; private set;}
@@ -35,7 +35,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
             }
             set {
                 _encryptionPasswordAlgorithm= value;
-                EncryptedPassword = _encryptionPasswordAlgorithm?.Invoke($"{Id}:{Email}:{Password}") ?? "";
+                EncryptedPassword = _encryptionPasswordAlgorithm?.Invoke($"{Email}:{Password}") ?? "";
                 IsPasswordEncrypted = !EncryptedPassword.IsNullOrEmpty();
             }
         }
@@ -54,7 +54,6 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
             Sex = sex;
             IsPasswordEncrypted = false;
             EncryptionPasswordAlgorithm = encryptionAlgorithmFunction;
-            EncryptedPassword = EncryptionPasswordAlgorithm?.Invoke($"{Id}:{Email}:{Password}") ?? "";
         }
 
         public User Disable()

@@ -3,6 +3,7 @@ using AxsisDemoProject.Controllers.Domain.UserSection.Model;
 using AxsisDemoProject.Controllers.Domain.UserSection.Ports;
 using AxsisDemoProject.Controllers.Domain.UserSection.Service.Results;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -66,19 +67,19 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
          * If the password doesn't match with the stored one, it won't update this user.
          * </summary>
          */
-        public async Task<UpdatingUserResult> UpdateUserAsync(User userToUpdate, string currentEmail, string newEmail, string currentPassword, string newPassword)
+        public async Task<UpdatingUserResult> UpdateUserAsync(User userNewUpdatedState, string currentEmail, string newEmail, string currentPassword, string newPassword)
         {
             // first, creates a new instance based on the stored email by the user, only Id and Email needed
-            var storedUser = await _userRepository.GetByIdAsync(userToUpdate.Id);
+            var storedUser = await _userRepository.GetByIdAsync(userNewUpdatedState.Id);
 
             var storedUserTempInstance = new User(
-                userToUpdate.Id,
-                userToUpdate.Name,
-                storedUser.Email,
-                userToUpdate.Password,
-                userToUpdate.Status,
-                userToUpdate.Sex,
-                storedUser.CreationDate,
+                userNewUpdatedState.Id,
+                userNewUpdatedState.Name,
+                currentEmail,
+                currentPassword,
+                userNewUpdatedState.Status ?? false,
+                userNewUpdatedState.Sex,
+                storedUser.CreationDate ?? DateTime.MinValue,
                 _encryptorService.Encrypt
             );
             
@@ -87,18 +88,29 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
             // with this info.
             bool bothPasswordsMatched = await _userRepository.HasAnyAsync(storedUser.Email, storedUserTempInstance.EncryptedPassword);
 
-            userToUpdate.EncryptionPasswordAlgorithm = _encryptorService.Encrypt;
-            userToUpdate.EncryptPassword();
+            // this is the new state, derived from the stored one as defaults values
+            var userToUploadAndUpdate = new User(
+                id: userNewUpdatedState.Id,
+                name: userNewUpdatedState.Name ?? storedUser.Name,
+                email: userNewUpdatedState.Email ?? storedUser.Email,
+                password: userNewUpdatedState.Password.IsNullOrEmpty() ? currentPassword : userNewUpdatedState.Password,
+                status: userNewUpdatedState.Status ?? storedUser.Status ?? false,
+                sex: userNewUpdatedState.Sex ?? storedUser.Sex,
+                creationDate: userNewUpdatedState.CreationDate ?? storedUser.CreationDate ?? DateTime.MinValue,
+                encryptionAlgorithmFunction: _encryptorService.Encrypt
+            );
+
+            userToUploadAndUpdate.EncryptPassword();
 
             var updatingUserResult = new UpdatingUserResult(
                 bothPasswordsMatched: bothPasswordsMatched,
-                wasPasswordEncrypted: userToUpdate.IsPasswordEncrypted
+                wasPasswordEncrypted: userToUploadAndUpdate.IsPasswordEncrypted
             );
 
 
-            if (updatingUserResult.shouldBeUpdated && userToUpdate.IsPasswordEncrypted)
+            if (updatingUserResult.shouldBeUpdated && userToUploadAndUpdate.IsPasswordEncrypted)
             {
-                await _userRepository.UpdateAsync(userToUpdate);
+                await _userRepository.UpdateAsync(userToUploadAndUpdate);
             }
             return updatingUserResult;
         }
