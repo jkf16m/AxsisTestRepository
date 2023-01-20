@@ -11,6 +11,7 @@ namespace AxsisDemoProject.Controllers.Domain.SharedSection.Automapper
             CreateMap<UserDTO, User>();
             CreateMap<User, UserDTO>().ForMember(m=>m.Password, o => o.Ignore());
             CreateMap<AddingUserResultDTO, AddingUserResult>().ReverseMap();
+            CreateMap<UpdatingUserResultDTO, UpdatingUserResult>().ReverseMap();
         }
     }
 }
