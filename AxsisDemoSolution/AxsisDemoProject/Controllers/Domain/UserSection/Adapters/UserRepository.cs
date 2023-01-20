@@ -51,7 +51,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Adapters
             return (await _axsisDemoContext.Users.AsNoTracking().FirstOrDefaultAsync(q => q.Id == id)).Email;
         }
 
-        public async Task<int> GetIdByEmail(string email)
+        public async Task<int> GetIdByEmailAsync(string email)
         {
             return (await _axsisDemoContext.Users.FirstOrDefaultAsync(q => q.Email == email)).Id;
         }

@@ -14,6 +14,8 @@ using Microsoft.Extensions.Hosting;
 using AxsisDemoProject.Controllers.Domain.SharedSection.Services;
 using AutoMapper;
 using AxsisDemoProject.Controllers.Domain.SharedSection.Automapper;
+using AxsisDemoProject.Controllers.Domain.SessionSection.Ports;
+using AxsisDemoProject.Controllers.Domain.SessionSection.Adapters;
 
 namespace AxsisDemoProject
 {
@@ -39,8 +41,10 @@ namespace AxsisDemoProject
             
 
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<ISessionRepository, SessionRepository>();
 
             services.AddScoped<EncryptorService>();
+            services.AddScoped<AuthService>();
             services.AddScoped<UserService>();
 
             // In production, the React files will be served from this directory

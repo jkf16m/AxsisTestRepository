@@ -39,7 +39,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Ports
         /**
          * <summary>Gets id of the user of the specified email</summary>
          */
-        Task<int> GetIdByEmail(string email);
+        Task<int> GetIdByEmailAsync(string email);
 
         /**
          * <summary>Get all users from the repository</summary>

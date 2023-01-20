@@ -3,6 +3,7 @@ using AxsisDemoProject.Controllers.Domain.SessionSection.Ports;
 using AxsisDemoProject.Controllers.Domain.SharedSection.Services;
 using AxsisDemoProject.Controllers.Domain.UserSection.Model;
 using AxsisDemoProject.Controllers.Domain.UserSection.Ports;
+using Microsoft.Identity.Client;
 using System;
 using System.Security.Cryptography;
 using System.Text;
@@ -15,7 +16,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
         private readonly IUserRepository _userRepository;
         private readonly ISessionRepository _sessionRepository;
         private readonly EncryptorService _encryptorService;
-        public AuthService(IUserRepository userRepository,ISessionRepository sessionRepository , EncryptorService encryptorService) {
+        public AuthService(IUserRepository userRepository, ISessionRepository sessionRepository , EncryptorService encryptorService) {
             _userRepository = userRepository;
             _encryptorService = encryptorService;
             _sessionRepository = sessionRepository;
@@ -33,7 +34,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
          */
         public async Task<string> AuthenticateAsync(string email, string password, DateTime tokenDate)
         {
-            var userId = await _userRepository.GetIdByEmail(email);
+            var userId = await _userRepository.GetIdByEmailAsync(email);
             var userTryingToLogIn = new User(userId, "", email, password, false, "", DateTime.MinValue, _encryptorService.Encrypt);
 
             if(await _userRepository.HasAnyAsync(userTryingToLogIn.Email, userTryingToLogIn.EncryptedPassword))
@@ -54,6 +55,20 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
             }
         }
 
+        public async Task<string> ConsumeTokenAsync(string email, string token, DateTime tokenDate)
+        {
+            var userId = await _userRepository.GetIdByEmailAsync(email);
+
+            var session = await _sessionRepository.GetSessionAsync(userId, token);
+
+            if (session == null) return "";
+
+            var newToken = _encryptorService.Encrypt($"{token}:{tokenDate}");
+
+            return (await _sessionRepository.UpdateSessionAsync(userId, token, newToken)).Token;
+
+        }
+
         /**
          * <summary>Expires the given token of the session</summary>
          * <param name="token">token string</param>
@@ -63,13 +78,9 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
          */
         public async Task<bool> ExpireAsync(string email, string token)
         {
-            var userId = await _userRepository.GetIdByEmail(email);
+            var userId = await _userRepository.GetIdByEmailAsync(email);
             return await _sessionRepository.ExpireSessionAsync(userId, token);
         }
 
-        public async Task<string> AuthorizeAsync(User user)
-        {
-            return "prueba";
-        }
     }
 }

@@ -59,7 +59,7 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters
             return Task.FromResult(_users.First(q => q.Id == id).Email);
         }
 
-        public Task<int> GetIdByEmail(string email)
+        public Task<int> GetIdByEmailAsync(string email)
         {
             return Task.FromResult(_users.First(q => q.Email == email).Id);
         }
