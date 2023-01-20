@@ -71,7 +71,16 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
             // first, creates a new instance based on the stored email by the user, only Id and Email needed
             var storedUserToUpdateEmail = await _userRepository.GetEmailById(userToUpdate.Id);
 
-            var storedUser = new User(userToUpdate.Id, userToUpdate.Name, storedUserToUpdateEmail, userToUpdate.Password, userToUpdate.Status, userToUpdate.Sex, userToUpdate.CreationDate);
+            var storedUser = new User(
+                userToUpdate.Id,
+                userToUpdate.Name,
+                storedUserToUpdateEmail,
+                userToUpdate.Password,
+                userToUpdate.Status,
+                userToUpdate.Sex,
+                userToUpdate.CreationDate,
+                _encryptorService.Encrypt
+            );
             
 
             // if both passwords matches, then it it will return true here, so it would be safe to update this user
