@@ -66,7 +66,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
          * If the password doesn't match with the stored one, it won't update this user.
          * </summary>
          */
-        public async Task<UpdatingUserResult> UpdateUserAsync(User userToUpdate)
+        public async Task<UpdatingUserResult> UpdateUserAsync(User userToUpdate, string currentEmail, string newEmail, string currentPassword, string newPassword)
         {
             // first, creates a new instance based on the stored email by the user, only Id and Email needed
             var storedUser = await _userRepository.GetByIdAsync(userToUpdate.Id);

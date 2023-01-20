@@ -38,17 +38,17 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Adapters
 
         public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return await _axsisDemoContext.Users.ToListAsync();
+            return await _axsisDemoContext.Users.AsNoTracking().ToListAsync();
         }
 
         public async Task<User> GetByIdAsync(int id)
         {
-            return await _axsisDemoContext.Users.FirstOrDefaultAsync(q => q.Id == id);
+            return await _axsisDemoContext.Users.AsNoTracking().FirstOrDefaultAsync(q => q.Id == id);
         }
 
         public async Task<string> GetEmailById(int id)
         {
-            return (await _axsisDemoContext.Users.FirstOrDefaultAsync(q => q.Id == id)).Email;
+            return (await _axsisDemoContext.Users.AsNoTracking().FirstOrDefaultAsync(q => q.Id == id)).Email;
         }
 
         public async Task<int> GetIdByEmail(string email)
@@ -77,9 +77,12 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Adapters
             throw new System.NotImplementedException();
         }
 
-        public Task UpdateAsync(User userToUpdate)
+        public async Task UpdateAsync(User userToUpdate)
         {
-            throw new System.NotImplementedException();
+
+            _axsisDemoContext.Update(userToUpdate);
+
+            await _axsisDemoContext.SaveChangesAsync();
         }
     }
 }

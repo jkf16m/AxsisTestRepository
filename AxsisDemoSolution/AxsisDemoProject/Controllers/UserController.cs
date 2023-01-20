@@ -62,12 +62,13 @@ namespace AxsisDemoProject.Controllers
 
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
-        public async Task<UpdatingUserResultDTO> Put(int id, [FromBody] UserDTO user)
+        public async Task<UpdatingUserResultDTO> Put(int id, [FromBody] UserUpdateDTO user)
         {
             user.Id = id;
+
             var userInstance = _mapper.Map<User>(user);
 
-            var result = await _userService.UpdateUserAsync(userInstance);
+            var result = await _userService.UpdateUserAsync(userInstance, user.CurrentEmail, user.NewEmail, user.CurrentPassword, user.NewPassword);
 
             var updatingUserResultDTO = _mapper.Map<UpdatingUserResultDTO>(result);
 
