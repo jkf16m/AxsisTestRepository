@@ -2,6 +2,9 @@
 using AxsisDemoProject.Controllers.Domain.UserSection.Ports;
 using AxsisDemoProject.Controllers.Domain.DataLayer;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace AxsisDemoProject.Controllers.Domain.UserSection.Adapters
 {
@@ -15,32 +18,53 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Adapters
 
         public Task AddAsync(User newUser)
         {
-            throw new System.NotImplementedException();
+            _axsisDemoContext.AddAsync(newUser);
+
+            return Task.CompletedTask;
         }
 
-        public Task<bool> DisableAsync(int userIdToDisable)
+        public async Task<bool> DisableAsync(int userIdToDisable)
         {
-            throw new System.NotImplementedException();
+            var userToDisable = await _axsisDemoContext.Users.FirstOrDefaultAsync(q => q.Id == userIdToDisable);
+
+            if (userToDisable == null) return false;
+
+            userToDisable.Disable();
+
+            _axsisDemoContext.SaveChanges();
+
+            return true;
         }
 
-        public Task<string> GetEmailById(int id)
+        public async Task<IEnumerable<User>> GetAllAsync()
         {
-            throw new System.NotImplementedException();
+            return await _axsisDemoContext.Users.ToListAsync();
         }
 
-        public Task<int> GetIdByEmail(string email)
+        public async Task<User> GetByIdAsync(int id)
         {
-            throw new System.NotImplementedException();
+            return await _axsisDemoContext.Users.FirstOrDefaultAsync(q => q.Id == id);
         }
 
-        public Task<bool> HasAnyAsync(string email, string password)
+        public async Task<string> GetEmailById(int id)
         {
-            throw new System.NotImplementedException();
+            return (await _axsisDemoContext.Users.FirstOrDefaultAsync(q => q.Id == id)).Email;
         }
 
-        public Task<bool> IsEmailAlreadyUsedAsync(string email)
+        public async Task<int> GetIdByEmail(string email)
         {
-            throw new System.NotImplementedException();
+            return (await _axsisDemoContext.Users.FirstOrDefaultAsync(q => q.Email == email)).Id;
+        }
+
+        public async Task<bool> HasAnyAsync(string email, string password)
+        {
+            return await _axsisDemoContext.Users.AnyAsync(q => q.Email == email && q.Password == password);
+        }
+
+        public async Task<bool> IsEmailAlreadyUsedAsync(string email)
+        {
+            return await _axsisDemoContext.Users.AnyAsync(q => q.Email == email);
+
         }
 
         public Task<bool> ShouldBeAuthorized(User user)

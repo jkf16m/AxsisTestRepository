@@ -4,6 +4,7 @@ using AxsisDemoProject.Controllers.Domain.UserSection.Ports;
 using AxsisDemoProject.Controllers.Domain.UserSection.Service.Results;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
@@ -16,6 +17,11 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
         {
             _userRepository = userRepository;
             _encryptorService = encryptionAlgorithm;
+        }
+
+        public async Task<IEnumerable<User>> GetUsersAsync()
+        {
+            return await _userRepository.GetAllAsync();
         }
 
         /**
@@ -89,5 +95,9 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
             return await _userRepository.DisableAsync(userIdToDisable);
         }
 
+        public async Task<User> GetUserByIdAsync(int id)
+        {
+            return await _userRepository.GetByIdAsync(id);
+        }
     }
 }

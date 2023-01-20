@@ -12,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AxsisDemoProject.Controllers.Domain.SharedSection.Services;
+using AutoMapper;
+using AxsisDemoProject.Controllers.Domain.SharedSection.Automapper;
 
 namespace AxsisDemoProject
 {
@@ -46,6 +48,19 @@ namespace AxsisDemoProject
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+
+            // AUTOMAPPER CONFIGURATION
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,5 +1,6 @@
 ﻿using AxsisDemoProject.Controllers.Domain.UserSection.Model;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AxsisDemoProject.Controllers.Domain.UserSection.Ports
@@ -39,5 +40,11 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Ports
          * <summary>Gets id of the user of the specified email</summary>
          */
         Task<int> GetIdByEmail(string email);
+
+        /**
+         * <summary>Get all users from the repository</summary>
+         */
+        Task<IEnumerable<User>> GetAllAsync();
+        Task<User> GetByIdAsync(int id);
     }
 }

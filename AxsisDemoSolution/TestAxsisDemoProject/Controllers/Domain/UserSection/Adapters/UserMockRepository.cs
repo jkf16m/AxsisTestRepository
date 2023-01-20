@@ -44,6 +44,16 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters
             return Task.FromResult(true);
         }
 
+        public Task<IEnumerable<User>> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<User> GetByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<string> GetEmailById(int id)
         {
             return Task.FromResult(_users.First(q => q.Id == id).Email);

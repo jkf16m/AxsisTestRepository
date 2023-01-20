@@ -1,5 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using AxsisDemoProject.Controllers.DataTransferObjects;
+using AxsisDemoProject.Controllers.Domain.UserSection.Model;
+using AxsisDemoProject.Controllers.Domain.UserSection.Service;
+using AxsisDemoProject.Controllers.Domain.UserSection.Service.Results;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,25 +15,44 @@ namespace AxsisDemoProject.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
-    {
+    { 
+        private readonly UserService _userService;
+        private readonly IMapper _mapper;
+        public UserController(UserService userService, IMapper mapper) {
+            _userService = userService;
+            _mapper = mapper;
+        }
+
         // GET: api/<UserController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IEnumerable<UserDTO>> GetAsync()
         {
-            return new string[] { "value1", "value2" };
+            var users = await _userService.GetUsersAsync();
+
+            var usersDTO = users.Select(q => _mapper.Map<UserDTO>(q));
+
+            return usersDTO;
         }
 
         // GET api/<UserController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<UserDTO> Get(int id)
         {
-            return "value";
+            var user = await _userService.GetUserByIdAsync(id);
+
+            var userDTO = _mapper.Map<UserDTO>(user);
+
+            return userDTO;
         }
 
         // POST api/<UserController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<AddingUserResult> Post([FromBody] UserDTO user)
         {
+            var userInstance = _mapper.Map<User>(user);
+            var addingUserResult = await _userService.AddNewUserAsync(userInstance);
+
+            return addingUserResult;
         }
 
         // PUT api/<UserController>/5
@@ -37,8 +63,9 @@ namespace AxsisDemoProject.Controllers
 
         // DELETE api/<UserController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public Task<bool> Delete(int id)
         {
+            return Task.FromResult(false);
         }
     }
 }
