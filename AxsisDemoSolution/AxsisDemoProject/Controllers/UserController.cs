@@ -3,7 +3,10 @@ using AxsisDemoProject.Controllers.DataTransferObjects;
 using AxsisDemoProject.Controllers.Domain.UserSection.Model;
 using AxsisDemoProject.Controllers.Domain.UserSection.Service;
 using AxsisDemoProject.Controllers.Domain.UserSection.Service.Results;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,16 +20,21 @@ namespace AxsisDemoProject.Controllers
     public class UserController : ControllerBase
     { 
         private readonly UserService _userService;
+        private readonly AuthService _authService;
         private readonly IMapper _mapper;
-        public UserController(UserService userService, IMapper mapper) {
+        public UserController(UserService userService, AuthService authService, IMapper mapper) {
             _userService = userService;
+            _authService = authService;
             _mapper = mapper;
         }
 
         // GET: api/<UserController>
         [HttpGet]
-        public async Task<IEnumerable<UserDTO>> GetAsync()
+        public async Task<IActionResult> GetAsync()
         {
+            string accessToken = Request.Headers["Authorization"];
+            if (!await _authService.AuthenticateAsync(accessToken)) return Unauthorized();
+
             var users = await _userService.GetUsersAsync();
 
             var usersDTO = users.Select(q =>
@@ -36,34 +44,44 @@ namespace AxsisDemoProject.Controllers
             }
             );
 
-            return usersDTO;
+            return Ok(usersDTO);
         }
 
         // GET api/<UserController>/5
         [HttpGet("{id}")]
-        public async Task<UserDTO> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
+            string accessToken = Request.Headers["Authorization"];
+            if (!await _authService.AuthenticateAsync(accessToken)) return Unauthorized();
+
+
             var user = await _userService.GetUserByIdAsync(id);
 
             var userDTO = _mapper.Map<UserDTO>(user);
 
-            return userDTO;
+            return Ok(userDTO);
         }
 
         // POST api/<UserController>
         [HttpPost]
-        public async Task<AddingUserResultDTO> Post([FromBody] UserDTO user)
+        public async Task<IActionResult> Post([FromBody] UserDTO user)
         {
+            string accessToken = Request.Headers["Authorization"];
+            if (!await _authService.AuthenticateAsync(accessToken)) return Unauthorized();
+
             var userInstance = _mapper.Map<User>(user);
             var addingUserResult = await _userService.AddNewUserAsync(userInstance);
             var addingUserResultDTO = _mapper.Map<AddingUserResultDTO>(addingUserResult);
-            return addingUserResultDTO;
+            return Ok(addingUserResultDTO);
         }
 
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
-        public async Task<UpdatingUserResultDTO> Put(int id, [FromBody] UserUpdateDTO user)
+        public async Task<IActionResult> Put(int id, [FromBody] UserUpdateDTO user)
         {
+            string accessToken = Request.Headers["Authorization"];
+            if (!await _authService.AuthenticateAsync(accessToken)) return Unauthorized();
+
             user.Id = id;
 
             var userInstance = _mapper.Map<User>(user);
@@ -72,14 +90,17 @@ namespace AxsisDemoProject.Controllers
 
             var updatingUserResultDTO = _mapper.Map<UpdatingUserResultDTO>(result);
 
-            return updatingUserResultDTO;
+            return Ok(updatingUserResultDTO);
         }
 
         // DELETE api/<UserController>/5
         [HttpDelete("{id}")]
-        public async Task<bool> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            return await _userService.DisableUserAsync(id);
+            string accessToken = Request.Headers["Authorization"];
+            if (!await _authService.AuthenticateAsync(accessToken)) return Unauthorized();
+
+            return Ok(await _userService.DisableUserAsync(id));
         }
     }
 }

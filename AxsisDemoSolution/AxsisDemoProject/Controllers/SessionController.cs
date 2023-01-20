@@ -40,7 +40,7 @@ namespace AxsisDemoProject.Controllers
         [HttpPost]
         public async Task<string> Post([FromBody] SessionCredentialsDTO sessionCredentialsDTO)
         {
-            return await _authService.AuthenticateAsync(sessionCredentialsDTO.Email, sessionCredentialsDTO.Password, DateTime.Now);
+            return await _authService.CreateTokenAsync(sessionCredentialsDTO.Email, sessionCredentialsDTO.Password, DateTime.Now);
         }
 
         // PUT api/<SessionController>/5

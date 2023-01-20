@@ -58,7 +58,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Adapters
 
         public async Task<bool> HasAnyAsync(string email, string password)
         {
-            return await _axsisDemoContext.Users.AnyAsync(q => q.Email == email && q.Password == password);
+            return await _axsisDemoContext.Users.AnyAsync(q => q.Email == email && q.Password == password && q.Status == true);
         }
 
         public async Task<bool> IsEmailAlreadyUsedAsync(string email)

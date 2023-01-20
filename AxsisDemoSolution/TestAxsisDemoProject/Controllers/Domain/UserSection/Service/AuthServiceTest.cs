@@ -28,7 +28,7 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
         {
             var tokenDate = DateTime.Parse("2022-01-01");
             Console.WriteLine(tokenDate.ToString());
-            var result = await _authService.AuthenticateAsync("jkf16m@gmail.com", "1234", tokenDate);
+            var result = await _authService.CreateTokenAsync("jkf16m@gmail.com", "1234", tokenDate);
 
 
             Assert.AreEqual(
@@ -40,7 +40,7 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
         public async Task FailedAuthentication()
         {
             var tokenDate = DateTime.Parse("2022-02-02");
-            var result = await _authService.AuthenticateAsync("jkf16m@gmail.com", "12345", tokenDate);
+            var result = await _authService.CreateTokenAsync("jkf16m@gmail.com", "12345", tokenDate);
             Assert.AreEqual("",result);
         }
 

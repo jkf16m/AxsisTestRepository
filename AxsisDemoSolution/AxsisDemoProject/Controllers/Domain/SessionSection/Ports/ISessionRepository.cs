@@ -12,5 +12,7 @@ namespace AxsisDemoProject.Controllers.Domain.SessionSection.Ports
 
         Task<Session> GetSessionAsync(int userId, string token);
         Task<Session> UpdateSessionAsync(int userId, string token, string newToken);
+
+        Task<bool> TokenExistsAsync(string token);
     }
 }

@@ -32,7 +32,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
          * <returns>A token string, supposed to be stored by the client, it will be empty if the authentication wasn't
          * sucessful</returns>
          */
-        public async Task<string> AuthenticateAsync(string email, string password, DateTime tokenDate)
+        public async Task<string> CreateTokenAsync(string email, string password, DateTime tokenDate)
         {
             var userId = await _userRepository.GetIdByEmailAsync(email);
             var userTryingToLogIn = new User(userId, "", email, password, false, "", DateTime.MinValue, _encryptorService.Encrypt);
@@ -53,6 +53,14 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
             {
                 return "";
             }
+        }
+
+        public async Task<bool> AuthenticateAsync(string token)
+        {
+            string tokenWithoutTextBearer = "";
+            if (token.StartsWith("Bearer"))
+                tokenWithoutTextBearer = token.Replace("Bearer", "").Trim();
+            return await _sessionRepository.TokenExistsAsync(tokenWithoutTextBearer);
         }
 
         public async Task<string> ConsumeTokenAsync(string email, string token, DateTime tokenDate)

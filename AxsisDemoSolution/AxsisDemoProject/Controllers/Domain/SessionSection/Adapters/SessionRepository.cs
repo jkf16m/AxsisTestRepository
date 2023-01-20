@@ -44,6 +44,15 @@ namespace AxsisDemoProject.Controllers.Domain.SessionSection.Adapters
             return await _axsisDemoContext.Sessions.FirstOrDefaultAsync(q => q.UserId == userId && q.Token == token);
         }
 
+        public async Task<bool> TokenExistsAsync(string token)
+        {
+            var session = await _axsisDemoContext.Sessions.FirstOrDefaultAsync(q => q.Token == token);
+
+            if (session == null) return false;
+
+            return true;
+        }
+
         public async Task<Session> UpdateSessionAsync(int userId, string token, string newToken)
         {
             var session = await _axsisDemoContext.Sessions.FirstOrDefaultAsync(q=>q.UserId == userId && q.Token == token);
