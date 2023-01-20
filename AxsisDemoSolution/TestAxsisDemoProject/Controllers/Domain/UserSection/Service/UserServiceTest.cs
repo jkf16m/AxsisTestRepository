@@ -8,6 +8,7 @@ using AxsisDemoProject.Controllers.Domain.UserSection.Service;
 using AxsisDemoProject.Controllers.Domain.UserSection.Service.Results;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters;
+using AxsisDemoProject.Controllers.Domain.SharedSection.Services;
 
 namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
 {
@@ -15,11 +16,13 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
     public class UserServiceTest
     {
         private UserService userService;
+        private EncryptorService _encryptorService;
 
         [TestInitialize]
         public void Initialize()
         {
-            userService = new UserService(new UserMockRepository());
+            _encryptorService = new EncryptorService();
+            userService = new UserService(new UserMockRepository(), _encryptorService);
         }
 
         [TestMethod]
@@ -46,6 +49,7 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
                 "male",
                 DateTime.MaxValue
                 );
+
             var result = await userService.AddNewUserAsync(newUser);
             Assert.AreEqual(
                 new AddingUserResult(

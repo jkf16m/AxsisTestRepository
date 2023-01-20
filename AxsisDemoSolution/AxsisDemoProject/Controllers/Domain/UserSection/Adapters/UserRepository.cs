@@ -28,7 +28,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Adapters
             throw new System.NotImplementedException();
         }
 
-        public Task<bool> IsEmailAlreadyUserAsync(string email)
+        public Task<bool> IsEmailAlreadyUsedAsync(string email)
         {
             throw new System.NotImplementedException();
         }

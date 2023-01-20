@@ -1,4 +1,5 @@
-﻿using AxsisDemoProject.Controllers.Domain.UserSection.Model;
+﻿using AxsisDemoProject.Controllers.Domain.SharedSection.Services;
+using AxsisDemoProject.Controllers.Domain.UserSection.Model;
 using AxsisDemoProject.Controllers.Domain.UserSection.Ports;
 using AxsisDemoProject.Controllers.Domain.UserSection.Service.Results;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
@@ -10,9 +11,11 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
     public class UserService
     {
         private IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository)
+        private EncryptorService _encryptorService;
+        public UserService(IUserRepository userRepository, EncryptorService encryptionAlgorithm)
         {
             _userRepository = userRepository;
+            _encryptorService = encryptionAlgorithm;
         }
 
         /**
@@ -24,7 +27,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
 
             var emailIsValid = newUser.IsEmailValid();
             var passwordIsValid = newUser.IsPasswordValid();
-            var emailAlreadyUsed = await _userRepository.IsEmailAlreadyUserAsync(newUser.Email);
+            var emailAlreadyUsed = await _userRepository.IsEmailAlreadyUsedAsync(newUser.Email);
 
 
             var result = new AddingUserResult(
@@ -35,7 +38,10 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
             );
 
             if (result.shouldBeAdded)
+            {
+                newUser.EncryptPassword(str=>_encryptorService.Encrypt(str));
                 await _userRepository.AddAsync(newUser);
+            }
 
 
             return result;

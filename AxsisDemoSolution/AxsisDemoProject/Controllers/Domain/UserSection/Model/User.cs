@@ -20,6 +20,9 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
         public string Sex { get; private set; }
         public DateTime CreationDate { get; private set; }
 
+        [NotMapped]
+        public bool IsPasswordEncrypted {get; private set;}
+
 
 
         private User() { }
@@ -30,6 +33,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
             Password = password; Status = status;
             CreationDate = creationDate;
             Sex = sex;
+            IsPasswordEncrypted = false;
         }
 
         public User Disable()
@@ -75,6 +79,17 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
         {
             string Rfc5322CompliantEmailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
             return Regex.IsMatch(Email, Rfc5322CompliantEmailRegex);
+        }
+
+        
+        public string EncryptPassword(Func<string, string> encryptionAlgorithmFunction)
+        {
+            if (IsPasswordEncrypted) return "";
+
+            Password = encryptionAlgorithmFunction($"{Email}:{Password}:{CreationDate}");
+            IsPasswordEncrypted = true;
+
+            return Password;
         }
     }
 }

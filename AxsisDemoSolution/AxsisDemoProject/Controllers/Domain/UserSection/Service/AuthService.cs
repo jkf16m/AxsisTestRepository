@@ -1,6 +1,9 @@
 ﻿using AxsisDemoProject.Controllers.Domain.DataLayer;
 using AxsisDemoProject.Controllers.Domain.UserSection.Model;
 using AxsisDemoProject.Controllers.Domain.UserSection.Ports;
+using System;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
@@ -12,14 +15,23 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
             _userRepository = userRepository;
         }
 
-        public async Task<bool> AuthenticateAsync(User user)
+        /**
+         * <summary>
+         * Authenticates user, to give him the basic access to try all the resources of the website,
+         * this doesn't give him all the available authorization
+         * </summary>
+         * <param name="email">Email of the user</param>
+         * <param name="password">Password of the user, it doesn't have to be encoded</param>
+         * <returns>A token string, supposed to be stored by the client</returns>
+         */
+        public async Task<string> AuthenticateAsync(string email, string password)
         {
-            return await _userRepository.ShouldHaveBasicAuthenticationAsync(user);
+            throw new NotImplementedException();
         }
 
-        public async Task<bool> AuthorizeAsync(User user)
+        public async Task<string> AuthorizeAsync(User user)
         {
-            return await _userRepository.ShouldBeAuthorized(user);
+            return "prueba";
         }
     }
 }

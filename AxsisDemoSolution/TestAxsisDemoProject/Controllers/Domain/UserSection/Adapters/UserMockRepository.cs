@@ -11,7 +11,8 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters
     internal class UserMockRepository : IUserRepository
     {
         private List<User> _users;
-        public UserMockRepository() {
+        public UserMockRepository()
+        {
             _users = new List<User>()
             {
                 new User(
@@ -48,7 +49,7 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters
             return Task.FromResult(_users.Exists(user => user.Equals(userToUpdate)));
         }
 
-        public Task<bool> IsEmailAlreadyUserAsync(string email)
+        public Task<bool> IsEmailAlreadyUsedAsync(string email)
         {
             return Task.FromResult(
                 _users.Any(user => user.Email == email)
@@ -66,6 +67,7 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters
         {
             throw new NotImplementedException();
         }
+
 
         public Task UpdateAsync(User userToUpdate)
         {
