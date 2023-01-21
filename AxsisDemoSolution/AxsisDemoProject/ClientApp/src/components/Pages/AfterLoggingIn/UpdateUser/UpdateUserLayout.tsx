@@ -1,5 +1,7 @@
 import React from "react";
+import { Button } from "react-bootstrap";
 import RenderFunctionRef from "../../../../lib/types";
+import { UserUpdateInfo } from "../../../../services/entities/User";
 
 interface UpdateUserLayoutProps {
     NameField: RenderFunctionRef<HTMLInputElement>;
@@ -7,6 +9,7 @@ interface UpdateUserLayoutProps {
     NewPasswordField: RenderFunctionRef<HTMLInputElement>;
     SexField: RenderFunctionRef<HTMLInputElement>;
     EmailField: RenderFunctionRef<HTMLInputElement>;
+    onAction: (userUpdateInfo: UserUpdateInfo)=>void;
 }
 const UpdateUserLayout = (props: UpdateUserLayoutProps)=>{
     const nameRef = React.useRef<HTMLInputElement>(null);
@@ -18,6 +21,7 @@ const UpdateUserLayout = (props: UpdateUserLayoutProps)=>{
 
     return(
         <>
+        <Button onClick={async ()=>{/*props.onAction();*/}}></Button>
         </>
     );
 }

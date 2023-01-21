@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_URL } from "./constants";
+import { API_URL, authorizationHeader } from "./constants";
 
 export const authService = {
     tryToLoginAsync: async (email: string, password: string):Promise<string> => {
@@ -8,7 +8,7 @@ export const authService = {
         return response.data;
     },
     tryAuthenticationAsync: async (token: string):Promise<boolean> => {
-        const response = await axios.post(`${API_URL}/session/auth`,null, {headers: {Authorization: `Bearer ${token}`}});
+        const response = await axios.post(`${API_URL}/session/auth`,null, authorizationHeader(token));
         
         return response.status === 200;
     }

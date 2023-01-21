@@ -4,7 +4,7 @@ import { User } from "../../../../services/entities/User";
 
 
 interface QueryUsersLayoutProps {
-    statusFilterField: RenderFunctionRef<HTMLInputElement>;
+    statusFilterField: RenderFunctionRef<HTMLSelectElement>;
     renderFromData: RenderFunctionRef<User[]>;
     onDeleteUser: (user: User) => void;
     onEditUser: (user: User) => void;
@@ -16,3 +16,5 @@ const QueryUsersLayout = (props:QueryUsersLayoutProps) =>{
         </div>
     )
 }
+
+export default QueryUsersLayout;

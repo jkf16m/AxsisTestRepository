@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
+import { ReactNode, RefObject } from "react";
 
-type RenderFunctionRef<T>= (ref: T)=>ReactNode;
+type RenderFunctionRef<T>= (ref: RefObject<T>)=>ReactNode;
 
 export default RenderFunctionRef;
