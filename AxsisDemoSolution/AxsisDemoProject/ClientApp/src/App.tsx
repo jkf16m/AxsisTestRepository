@@ -32,7 +32,7 @@ export default () => {
     },[token])
 
     return(
-    <Layout>
+        <>
         {loggedIn ? <LoggedInRoutes /> : <AnonymousRoutes />}
-    </Layout>
+        </>
 )}

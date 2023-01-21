@@ -4,6 +4,7 @@ import { Route } from 'react-router';
 import { authService } from '../services/authService';
 import { ApplicationState } from '../store';
 import IfRenderer from './IfRenderer';
+import AnonymousLayout from './Pages/AnonymousLayout';
 import Login from './Pages/Login';
 
 interface IAnonymousRoutesProps {
@@ -12,8 +13,10 @@ interface IAnonymousRoutesProps {
 const AnonymousRoutes = () => {
 return(
     <>
-        <Route exact path='/' component={Login} />
-        <Route path='/login' component={Login} />
+        <AnonymousLayout>
+            <Route exact path='/' component={Login} />
+            <Route path='/login' component={Login} />
+        </AnonymousLayout>
     </>
 );}
 

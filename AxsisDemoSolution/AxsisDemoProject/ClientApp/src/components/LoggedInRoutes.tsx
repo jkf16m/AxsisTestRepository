@@ -7,6 +7,7 @@ import Counter from './Counter';
 import FetchData from './FetchData';
 import IfRenderer from './IfRenderer';
 import Home from './Pages/AfterLoggingIn/Home';
+import Layout from './Pages/AfterLoggingIn/Layout';
 
 interface ILoggedInRoutesProps {
     children: JSX.Element | JSX.Element[];
@@ -14,9 +15,11 @@ interface ILoggedInRoutesProps {
 const LoggedInRoutes = () =>{
     return(
         <>
-            <Route exact path='/' component={Home} />
-            <Route path='/counter' component={Counter} />
-            <Route path='/fetch-data/:startDateIndex?' component={FetchData} />
+            <Layout>
+                <Route exact path='/' component={Home} />
+                <Route path='/counter' component={Counter} />
+                <Route path='/fetch-data/:startDateIndex?' component={FetchData} />
+            </Layout>
         </>
     );
 }

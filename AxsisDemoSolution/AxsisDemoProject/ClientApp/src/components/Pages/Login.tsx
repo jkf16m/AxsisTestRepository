@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
-import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 import { authService } from '../../services/authService';
 import { Token } from '../../services/entities/Token';
 import { ApplicationState } from '../../store';
@@ -14,38 +13,59 @@ const Login = () =>{
 
 
   return (
-    <div>
-      <Form>
-        <h1></h1>
-        <FormGroup>
-          <Label for="exampleEmail">Email</Label>
-          <Input
-            innerRef={emailRef}
+    <div className={"container"}>
+      <div
+        className={"card card-body bg-light outline-info"}
+      >
+      <h6 className='card-title'>Please enter your credentials:</h6>
+      <form >
+        <div className='form-group'>
+          <label htmlFor="exampleEmail">Email</label>
+          <input
+            ref={emailRef}
+            className='form-control'
             type="email"
             name="email"
             id="exampleEmail"
             placeholder="example@mail.com"
           />
-        </FormGroup>
-        <FormGroup>
-          <Label for="examplePassword">Password</Label>
-          <Input
-            innerRef={passwordRef}
+        </div>
+        <div className='form-group'>
+          <label htmlFor="examplePassword">Password</label>
+          <input
+            className='form-control'
+            ref={passwordRef}
             type="password"
             name="password"
             id="examplePassword"
           />
-        </FormGroup>
-        <Button
+        </div>
+        <div className="row justify-content-center">
+          {
+            tokenState?.failedLogin &&
+        <div className='invalid-feedback'>"Email o contraseña incorrectos"</div>
+          }
+        <button
+          type='submit'
+          className='btn btn-primary'
           onClick={async() => {
             if(!emailRef.current || !passwordRef.current) return;
             let result = await authService.tryToLoginAsync(emailRef.current.value, passwordRef.current.value);
-            dispatch(actionCreators.updateToken(new Token({value: result, expires_at: new Date()})));
+            dispatch(
+              actionCreators.updateToken(
+                {
+                  token:new Token({value: result, expires_at: new Date()}),
+                  failedLogin: !result
+                }
+              )
+            );
           }}
-        >Login</Button>
-      </Form>
+        >Login</button>
+        </div>
+      </form>
+      </div>
     </div>
   );
 }
 
-export default connect()(Login);
+export default Login;
