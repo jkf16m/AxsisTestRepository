@@ -1,6 +1,5 @@
 interface TokenProps{
     value: string;
-    expires_at: Date;
 }
 
 export class Token{

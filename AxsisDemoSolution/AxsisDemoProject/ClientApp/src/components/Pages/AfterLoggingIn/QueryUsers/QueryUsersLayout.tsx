@@ -5,7 +5,7 @@ import { User } from "../../../../services/entities/User";
 
 interface QueryUsersLayoutProps {
     statusFilterField: RenderFunctionRef<HTMLSelectElement>;
-    renderFromData: RenderFunctionRef<User[]>;
+    renderFromData: (users: User[])=>JSX.Element;
     onDeleteUser: (user: User) => void;
     onEditUser: (user: User) => void;
 }
