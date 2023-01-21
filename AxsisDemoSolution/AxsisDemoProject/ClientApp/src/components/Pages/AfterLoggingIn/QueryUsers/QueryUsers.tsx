@@ -19,12 +19,6 @@ const QueryUsers = ()=>{
             statusFilterField={(statusFilterField) =>{
                 return <Form.Control as="select" ref={statusFilterField} />
             }}
-            onDeleteUser={(user) =>{
-                // userService.deleteUser(user.id);
-            }}
-            onEditUser={(user) =>{
-                // userService.editUser(user);
-            }}
         />
     )
 }
