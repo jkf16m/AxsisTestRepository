@@ -1,27 +1,31 @@
 import * as React from 'react';
-import { Route } from 'react-router';
+import { Route, Routes } from 'react-router';
 import Layout from './components/Pages/AfterLoggingIn/Layout';
 import Home from './components/Pages/AfterLoggingIn/Home';
-import Counter from './components/Counter';
-import FetchData from './components/FetchData';
 
 import './custom.css'
 import AnonymousRoutes from './components/AnonymousRoutes';
 import LoggedInRoutes from './components/LoggedInRoutes';
 import Login from './components/Pages/Login';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from './store';
 import { authService } from './services/authService';
+import AnonymousLayout from './components/Pages/AnonymousLayout';
+import { actionCreators } from './store/TokenStore';
+import { Token } from './services/entities/Token';
 
-export default () => {
-    const token = useSelector((state: ApplicationState)=> state.token);
+const App = () => {
+    const tokenState = useSelector((state: ApplicationState)=> state.token);
+    const dispatch = useDispatch();
+    
     const [loggedIn, setLoggedIn] = React.useState(false);
     React.useEffect(()=>{
         const getToken = async ()=>{
-            if(!token) return;
-            if(!token.token) return;
-            if(token.token.props.value){
-                var authResult = await authService.tryAuthenticationAsync(token.token.props.value);
+            if(!tokenState) return;
+            if(!tokenState.token) return;
+                let authResult : boolean;
+            if(tokenState.token.props.value){
+                authResult = await authService.tryAuthenticationAsync(tokenState.token.props.value);
             }else{
                 authResult = false;
             }
@@ -29,10 +33,35 @@ export default () => {
         };
         getToken();
         
-    },[token])
+    },[tokenState])
 
     return(
-        <>
-        {loggedIn ? <LoggedInRoutes /> : <AnonymousRoutes />}
-        </>
+        <Routes>
+            <>
+            
+            {loggedIn ?
+                <>
+                    <Route path='/' element={<Layout><Home/></Layout>} />
+                    <Route path='/counter' element={<></>} />
+                    <Route path='/fetch-data/:startDateIndex?' element={<></>} />
+                </>
+                :
+                    <Route path='/*' element={<AnonymousLayout><Login
+                        loginAction={
+                            (token:string)=>dispatch(
+                                actionCreators.updateToken(
+                                    {
+                                        failedLogin: token ? false : true,
+                                        token: new Token({value: token, expires_at: new Date()})
+                                    }
+                                )
+                            )
+                        }
+                        failedLogin={tokenState ? tokenState.failedLogin : false}
+                    /></AnonymousLayout>} />
+            }
+            </>
+        </Routes>
 )}
+
+export default App;

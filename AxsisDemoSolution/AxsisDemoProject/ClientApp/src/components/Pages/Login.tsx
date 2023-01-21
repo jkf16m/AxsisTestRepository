@@ -5,21 +5,25 @@ import { Token } from '../../services/entities/Token';
 import { ApplicationState } from '../../store';
 import { actionCreators } from '../../store/TokenStore';
 
-const Login = () =>{
-  const tokenState = useSelector((state: ApplicationState) => state.token);
-  const dispatch = useDispatch();
+interface ILoginProps {
+  failedLogin: boolean;
+  loginAction: (token: string) => void;
+}
+const Login = ({
+  failedLogin,
+  loginAction
+}:ILoginProps) =>{
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
 
-
   return (
-    <div className={"container"}>
+    <div className={"container h-100 w-100"}>
       <div
         className={"card card-body bg-light outline-info"}
       >
       <h6 className='card-title'>Please enter your credentials:</h6>
-      <form >
-        <div className='form-group'>
+      <form>
+        <div className='mb-3'>
           <label htmlFor="exampleEmail">Email</label>
           <input
             ref={emailRef}
@@ -30,7 +34,7 @@ const Login = () =>{
             placeholder="example@mail.com"
           />
         </div>
-        <div className='form-group'>
+        <div className='mb-3'>
           <label htmlFor="examplePassword">Password</label>
           <input
             className='form-control'
@@ -39,28 +43,29 @@ const Login = () =>{
             name="password"
             id="examplePassword"
           />
+          
         </div>
-        <div className="row justify-content-center">
+        <div className='row text-center'>
           {
-            tokenState?.failedLogin &&
-        <div className='invalid-feedback'>"Email o contraseña incorrectos"</div>
+            failedLogin ?
+            <p className='text-danger'>
+              Email o contraseña incorrectos
+            </p>
+            : <></>
           }
-        <button
-          type='submit'
-          className='btn btn-primary'
-          onClick={async() => {
-            if(!emailRef.current || !passwordRef.current) return;
-            let result = await authService.tryToLoginAsync(emailRef.current.value, passwordRef.current.value);
-            dispatch(
-              actionCreators.updateToken(
-                {
-                  token:new Token({value: result, expires_at: new Date()}),
-                  failedLogin: !result
-                }
-              )
-            );
-          }}
-        >Login</button>
+        </div>
+        <div className="row text-center">
+          <div className="col">
+            <button
+              type='button'
+              className={"btn btn-primary"}
+              onClick={async() => {
+                if(!emailRef.current || !passwordRef.current) return;
+                const result = await authService.tryToLoginAsync(emailRef.current.value, passwordRef.current.value);
+                loginAction(result);
+              }}
+            >Login</button>
+          </div>
         </div>
       </form>
       </div>

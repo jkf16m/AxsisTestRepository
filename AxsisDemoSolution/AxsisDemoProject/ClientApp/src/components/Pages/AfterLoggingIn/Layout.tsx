@@ -1,8 +1,8 @@
 import * as React from 'react';
-import NavMenu from '../../NavMenu';
+import NavMenu from './NavMenu';
 
-export default class Layout extends React.PureComponent<{}, { children?: React.ReactNode }> {
-    public render() {
+const Layout = ({children}:{ children?: React.ReactNode })=> {
+    
         return (
             <React.Fragment>
                 <div className='container'>
@@ -11,11 +11,12 @@ export default class Layout extends React.PureComponent<{}, { children?: React.R
                             <NavMenu/>
                         </div>
                         <div className = 'col'>
-                            {this.props.children}   
+                            {children}   
                         </div>     
                     </div>
                 </div>
             </React.Fragment>
         );
-    }
 }
+
+export default Layout;

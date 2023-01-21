@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Collapse, Container, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
+import { Collapse, Container, Nav, Navbar, NavbarBrand, NavItem, NavLink } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
 
@@ -12,20 +12,18 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
         return (
             <header>
                 <Nav
-                    
-                    vertical
+                    className="flex-column"
                 >
                     <Container>
-                        <NavbarBrand tag={Link} to="/">AxsisDemoProject</NavbarBrand>
-                        <NavbarToggler onClick={this.toggle} className="mr-2"/>
+                        <Navbar.Brand  as={Link}  to={"/home"}>AxsisDemoProject</Navbar.Brand>
                             <NavItem>
-                                <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
+                                <Nav.Link as={Link} to="/" className="text-dark" >Home</Nav.Link>
                             </NavItem>
                             <NavItem>
-                                <NavLink tag={Link} className="text-dark" to="/counter">Users</NavLink>
+                                <Nav.Link as={Link}  to="/counter" className="text-dark">Users</Nav.Link>
                             </NavItem>
                             <NavItem>
-                                <NavLink tag={Link} className="text-dark" to="/fetch-data">Info</NavLink>
+                                <Nav.Link as={Link}  to="/fetch-data" className="text-dark">Info</Nav.Link>
                             </NavItem>
                     </Container>
                 </Nav>

@@ -14,8 +14,6 @@ const AnonymousRoutes = () => {
 return(
     <>
         <AnonymousLayout>
-            <Route exact path='/' component={Login} />
-            <Route path='/login' component={Login} />
         </AnonymousLayout>
     </>
 );}
