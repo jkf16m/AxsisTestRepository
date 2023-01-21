@@ -2,6 +2,7 @@
 using AxsisDemoProject.Controllers.DataTransferObjects;
 using AxsisDemoProject.Controllers.Domain.UserSection.Service;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -41,6 +42,15 @@ namespace AxsisDemoProject.Controllers
         public async Task<string> Post([FromBody] SessionCredentialsDTO sessionCredentialsDTO)
         {
             return await _authService.CreateTokenAsync(sessionCredentialsDTO.Email, sessionCredentialsDTO.Password, DateTime.Now);
+        }
+
+        [HttpPost("auth")]
+        public async Task<IActionResult> PostAuthenticate()
+        {
+            string accessToken = Request.Headers["Authorization"];
+            if (accessToken.IsNullOrEmpty()) return Unauthorized();
+            if (!await _authService.AuthenticateAsync(accessToken)) return Unauthorized();
+            return Ok();
         }
 
         // PUT api/<SessionController>/5

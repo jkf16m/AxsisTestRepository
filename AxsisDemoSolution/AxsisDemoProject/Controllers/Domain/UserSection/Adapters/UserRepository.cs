@@ -53,7 +53,9 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Adapters
 
         public async Task<int> GetIdByEmailAsync(string email)
         {
-            return (await _axsisDemoContext.Users.FirstOrDefaultAsync(q => q.Email == email)).Id;
+            var user =  (await _axsisDemoContext.Users.FirstOrDefaultAsync(q => q.Email == email));
+            if (user == null) return 0;
+            return user.Id;
         }
 
         public async Task<bool> HasAnyAsync(string email, string password)

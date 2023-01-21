@@ -1,3 +1,4 @@
+import { Action, Reducer } from "redux";
 import { Token } from "../services/entities/Token";
 
 export interface TokenState{
@@ -15,14 +16,15 @@ export const actionCreators = {
     updateToken: (token: Token) => ({ type: 'UPDATE_TOKEN', token}) as UpdateTokenAction
 }
 
-export function reducer(state: Token | undefined, action: TokenAction){
+export const reducer: Reducer<TokenState> = (state: TokenState | undefined, incomingAction: Action)=>{
     if (state === undefined){
-        return new Token({
-            value: '',
-            expires_at: new Date()
-        })
+        return {token: new Token({value: '',expires_at: new Date()})}
     }
-    if(action.type === 'UPDATE_TOKEN'){
-        return new Token({...action.token.props})
+    const action = incomingAction as TokenAction;
+    switch(action.type){
+        case 'UPDATE_TOKEN':
+            return {...state, token: action.token};
+        default:
+            return state;
     }
-}
+};

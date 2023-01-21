@@ -9,17 +9,30 @@ import './custom.css'
 import AnonymousRoutes from './components/AnonymousRoutes';
 import LoggedInRoutes from './components/LoggedInRoutes';
 import Login from './components/Pages/Login';
+import { useSelector } from 'react-redux';
+import { ApplicationState } from './store';
+import { authService } from './services/authService';
 
-export default () => (
+export default () => {
+    const token = useSelector((state: ApplicationState)=> state.token);
+    const [loggedIn, setLoggedIn] = React.useState(false);
+    React.useEffect(()=>{
+        const getToken = async ()=>{
+            if(!token) return;
+            if(!token.token) return;
+            if(token.token.props.value){
+                var authResult = await authService.tryAuthenticationAsync(token.token.props.value);
+            }else{
+                authResult = false;
+            }
+            setLoggedIn(authResult);
+        };
+        getToken();
+        
+    },[token])
 
+    return(
     <Layout>
-        <AnonymousRoutes>
-            <Route path='/login' component={Login} />
-        </AnonymousRoutes>
-        <LoggedInRoutes>
-            <Route exact path='/' component={Home} />
-            <Route path='/counter' component={Counter} />
-            <Route path='/fetch-data/:startDateIndex?' component={FetchData} />
-        </LoggedInRoutes>
+        {loggedIn ? <LoggedInRoutes /> : <AnonymousRoutes />}
     </Layout>
-);
+)}
