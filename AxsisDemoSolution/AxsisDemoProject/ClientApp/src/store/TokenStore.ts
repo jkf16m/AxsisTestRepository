@@ -1,5 +1,6 @@
 import { Action, Reducer } from "redux";
 import { Token } from "../services/entities/Token";
+import tokenService from "../services/tokenService";
 
 export interface TokenState{
     token: Token;
@@ -19,11 +20,15 @@ export const actionCreators = {
 
 export const reducer: Reducer<TokenState> = (state: TokenState | undefined, incomingAction: Action)=>{
     if (state === undefined){
-        return {token: new Token({value: '',expires_at: new Date()}),failedLogin: false}
+        // here we get the token from the cookie (if there is one)
+        let storedToken = tokenService.getSessionToken();
+        return {token: new Token({...storedToken.props}),failedLogin: false}
     }
     const action = incomingAction as TokenAction;
     switch(action.type){
         case 'UPDATE_TOKEN':
+            // here we update the token in the cookie
+            tokenService.updateSessionToken(action.payload.token);
             return {...state, token: action.payload.token, failedLogin: action.payload.failedLogin};
         default:
             return state;

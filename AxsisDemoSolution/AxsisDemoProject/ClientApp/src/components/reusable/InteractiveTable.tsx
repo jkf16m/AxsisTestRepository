@@ -1,10 +1,10 @@
 import React from "react";
 
 import { Form, Table } from "react-bootstrap";
-import { Entity, Props } from "../../../../lib/interfaces";
-import { authService } from "../../../../services/authService";
-import { User, UserPropsKey } from "../../../../services/entities/User";
-import userService from "../../../../services/userService";
+import { Entity, Props } from "../../lib/interfaces";
+import { authService } from "../../services/authService";
+import { User, UserPropsKey } from "../../services/entities/User";
+import userService from "../../services/userService";
 
 
 

@@ -49,6 +49,7 @@ const AddUserLayout = (props:AddUserLayoutProps) =>{
             <Form.Group>
                 <Form.Control type="button" value="Add User" onClick={async ()=>{
                     const user = new User({
+                        id: 0,
                         email: emailRef.current?.value || "",
                         name: nameRef.current?.value || "",
                         password: passwordRef.current?.value || "",

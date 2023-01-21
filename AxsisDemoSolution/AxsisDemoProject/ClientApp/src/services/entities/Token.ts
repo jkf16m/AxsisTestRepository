@@ -1,5 +1,6 @@
 interface TokenProps{
     value: string;
+    expirationDate: Date;
 }
 
 export class Token{
