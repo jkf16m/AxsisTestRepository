@@ -8,6 +8,7 @@ const tokenService = {
         Cookies.set(sessionToken, token.props.value, {
             expires: token.props.expirationDate
         });
+        if(token.props.expirationDate === undefined) return;
         Cookies.set(sessionTokenExpirationDate, token.props.expirationDate.toUTCString(), {
             expires: token.props.expirationDate
         })
