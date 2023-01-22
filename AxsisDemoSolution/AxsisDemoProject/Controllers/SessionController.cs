@@ -39,9 +39,11 @@ namespace AxsisDemoProject.Controllers
 
         // POST api/<SessionController>
         [HttpPost]
-        public async Task<string> Post([FromBody] SessionCredentialsDTO sessionCredentialsDTO)
+        public async Task<SessionDTO> Post([FromBody] SessionCredentialsDTO sessionCredentialsDTO)
         {
-            return await _authService.CreateTokenAsync(sessionCredentialsDTO.Email, sessionCredentialsDTO.Password, DateTime.Now);
+            var session = await _authService.CreateTokenAsync(sessionCredentialsDTO.Email, sessionCredentialsDTO.Password, DateTime.Now);
+            var sessionDTO = _mapper.Map<SessionDTO>(session);
+            return sessionDTO;
         }
 
         [HttpPost("auth")]

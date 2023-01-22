@@ -1,4 +1,5 @@
 ﻿using AxsisDemoProject.Controllers.Domain.DataLayer;
+using AxsisDemoProject.Controllers.Domain.SessionSection.Model;
 using AxsisDemoProject.Controllers.Domain.SessionSection.Ports;
 using AxsisDemoProject.Controllers.Domain.SharedSection.Services;
 using AxsisDemoProject.Controllers.Domain.UserSection.Model;
@@ -32,7 +33,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
          * <returns>A token string, supposed to be stored by the client, it will be empty if the authentication wasn't
          * sucessful</returns>
          */
-        public async Task<string> CreateTokenAsync(string email, string password, DateTime tokenDate)
+        public async Task<Session> CreateTokenAsync(string email, string password, DateTime tokenDate)
         {
             var userId = await _userRepository.GetIdByEmailAsync(email);
             var userTryingToLogIn = new User(userId, "", email, password, false, "", DateTime.MinValue, _encryptorService.Encrypt);
@@ -45,13 +46,13 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
                     // this is the session generated token, it will be regenerated each request
                     _encryptorService.Encrypt($"{userTryingToLogIn.EncryptedPassword}:{tokenDate}")
                     // this is the session generated token expiration date
-                    ,userTryingToLogIn.Id, tokenDate.AddDays(1)
+                    , userTryingToLogIn.Id, tokenDate.AddDays(1)
                     )
-                ).Token;
+                );
             }
             else
             {
-                return "";
+                return null;
             }
         }
 

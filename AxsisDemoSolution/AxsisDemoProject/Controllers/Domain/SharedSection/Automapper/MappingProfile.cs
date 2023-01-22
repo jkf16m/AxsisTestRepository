@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AxsisDemoProject.Controllers.DataTransferObjects;
+using AxsisDemoProject.Controllers.Domain.SessionSection.Model;
 using AxsisDemoProject.Controllers.Domain.UserSection.Model;
 using AxsisDemoProject.Controllers.Domain.UserSection.Service.Results;
 
@@ -15,6 +16,7 @@ namespace AxsisDemoProject.Controllers.Domain.SharedSection.Automapper
             CreateMap<UserUpdateDTO, User>()
                 .ForMember(m => m.Email, o => o.MapFrom(n => n.NewEmail))
                 .ForMember(m => m.Password, o => o.MapFrom(n => n.NewPassword));
+            CreateMap<Session, SessionDTO>().ReverseMap();
         }
     }
 }
