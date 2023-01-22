@@ -2,8 +2,6 @@ import * as React from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { authService } from '../../services/authService';
 import { Token } from '../../services/entities/Token';
-import { ApplicationState } from '../../store';
-import { actionCreators } from '../../store/TokenStore';
 
 interface ILoginProps {
   failedLogin: boolean;

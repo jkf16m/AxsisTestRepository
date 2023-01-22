@@ -4,14 +4,18 @@ import { User } from "../../../../services/entities/User";
 
 
 interface QueryUsersLayoutProps {
-    statusFilterField: RenderFunctionRef<HTMLSelectElement>;
-    renderFromData: (users: User[])=>JSX.Element;
+    table: JSX.Element;
+    editUserModal: JSX.Element;
+    deleteUserModal: JSX.Element;
 }
 const QueryUsersLayout = (props:QueryUsersLayoutProps) =>{
 
     return (
-        <div>
-        </div>
+        <>
+            {props.table}
+            {props.editUserModal}
+            {props.deleteUserModal}
+        </>
     )
 }
 

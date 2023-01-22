@@ -2,22 +2,19 @@ import * as React from 'react';
 import { Route, Routes } from 'react-router';
 import Layout from './components/Pages/AfterLoggingIn/Layout';
 import Home from './components/Pages/AfterLoggingIn/Home';
-
 import './custom.css'
-import AnonymousRoutes from './components/AnonymousRoutes';
-import LoggedInRoutes from './components/LoggedInRoutes';
 import Login from './components/Pages/Login';
 import { useDispatch, useSelector } from 'react-redux';
-import { ApplicationState } from './store';
 import { authService } from './services/authService';
 import AnonymousLayout from './components/Pages/AnonymousLayout';
-import { actionCreators } from './store/TokenStore';
 import { Token } from './services/entities/Token';
 import NavMenu from './components/Pages/AfterLoggingIn/NavMenu';
+import { useAppDispatch, useAppSelector } from './components/hooks/redux';
+import { tokenActions } from './store/features/tokenReducer';
 
 const App = () => {
-    const tokenState = useSelector((state: ApplicationState)=> state.token);
-    const dispatch = useDispatch();
+    const tokenState = useAppSelector(state=>state.token);
+    const dispatch = useAppDispatch();
     
     const [loggedIn, setLoggedIn] = React.useState(false);
     React.useEffect(()=>{
@@ -53,7 +50,7 @@ const App = () => {
                     <Route path='/*' element={<AnonymousLayout><Login
                         loginAction={
                             (token:Token)=>dispatch(
-                                actionCreators.updateToken(
+                                tokenActions.updateToken(
                                     {
                                         failedLogin: token ? false : true,
                                         token: new Token({...token.props})

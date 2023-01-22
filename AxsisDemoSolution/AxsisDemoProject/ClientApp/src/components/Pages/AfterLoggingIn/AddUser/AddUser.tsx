@@ -3,11 +3,11 @@ import { Form } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { authService } from "../../../../services/authService";
 import userService from "../../../../services/userService";
-import { ApplicationState } from "../../../../store";
+import { useAppSelector } from "../../../hooks/redux";
 import AddUserLayout from "./AddUserLayout";
 
 const AddUser =()=>{
-    const tokenState = useSelector((state: ApplicationState)=> state.token);
+    const tokenState = useAppSelector(s=>s.token);
 
     return (
         <AddUserLayout

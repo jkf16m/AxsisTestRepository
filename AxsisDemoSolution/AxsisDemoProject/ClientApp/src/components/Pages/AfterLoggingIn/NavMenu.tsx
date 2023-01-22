@@ -2,15 +2,15 @@ import * as React from 'react';
 import { Button, Collapse, Container, Nav, Navbar, NavbarBrand, NavItem, NavLink } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { ApplicationState } from '../../../store';
-import { actionCreators, TokenState } from '../../../store/TokenStore';
+import { tokenActions, TokenState } from '../../../store/features/tokenReducer';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import Modal from '../../reusable/PopUp';
 import './NavMenu.css';
 
 const NavMenu =()=>{
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = React.useState(false);
-    const tokenStore = useSelector((state: ApplicationState)=> state.token);
-    const dispatch = useDispatch();
+    const tokenStore = useAppSelector(state=>state.token);
+    const dispatch = useAppDispatch();
 
         return (
             <header>
@@ -42,7 +42,7 @@ const NavMenu =()=>{
                     body='You will be redirected to the login page'
                     onAccept={()=>{
                         setIsConfirmationModalOpen(false)
-                        dispatch(actionCreators.removeToken());
+                        dispatch(tokenActions.removeToken());
                     }}
                     onClose={()=>{
                         setIsConfirmationModalOpen(false)
