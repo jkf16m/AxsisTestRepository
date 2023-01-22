@@ -16,6 +16,9 @@ using AutoMapper;
 using AxsisDemoProject.Controllers.Domain.SharedSection.Automapper;
 using AxsisDemoProject.Controllers.Domain.SessionSection.Ports;
 using AxsisDemoProject.Controllers.Domain.SessionSection.Adapters;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace AxsisDemoProject
 {
@@ -38,7 +41,29 @@ namespace AxsisDemoProject
                 options.UseSqlServer(connection_string);
             });
 
-            
+            // AUTHENTICATION
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(o =>
+            {
+                o.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+                    ValidAudience = Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]
+                        )
+                    ),
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = false,
+                    ValidateIssuerSigningKey = true
+                };
+            });
+            services.AddAuthorization();
 
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<ISessionRepository, SessionRepository>();
@@ -79,6 +104,9 @@ namespace AxsisDemoProject
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
