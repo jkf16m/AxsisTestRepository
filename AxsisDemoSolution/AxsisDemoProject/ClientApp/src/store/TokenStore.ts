@@ -12,11 +12,17 @@ export interface UpdateTokenAction {
     payload: TokenState
 }
 
-type TokenAction = UpdateTokenAction;
+export interface RemoveTokenAction {
+    type: 'REMOVE_TOKEN'
+}
+
 
 export const actionCreators = {
-    updateToken: (payload: TokenState) => ({ type: 'UPDATE_TOKEN', payload}) as UpdateTokenAction
+    updateToken: (payload: TokenState) => ({ type: 'UPDATE_TOKEN', payload}) as UpdateTokenAction,
+    removeToken: () => ({ type: 'REMOVE_TOKEN'}) as RemoveTokenAction
 }
+
+type TokenAction = UpdateTokenAction | RemoveTokenAction;
 
 export const reducer: Reducer<TokenState> = (state: TokenState | undefined, incomingAction: Action)=>{
     if (state === undefined){
@@ -30,6 +36,10 @@ export const reducer: Reducer<TokenState> = (state: TokenState | undefined, inco
             // here we update the token in the cookie
             tokenService.updateSessionToken(action.payload.token);
             return {...state, token: action.payload.token, failedLogin: action.payload.failedLogin};
+        case 'REMOVE_TOKEN':
+            // here we remove the token from the cookie
+            tokenService.removeSessionToken();
+            return {...state, token: new Token({value: '', expirationDate: new Date()}), failedLogin: false};
         default:
             return state;
     }

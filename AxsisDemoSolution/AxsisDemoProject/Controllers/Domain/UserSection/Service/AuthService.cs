@@ -30,7 +30,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
          * </summary>
          * <param name="email">Email of the user</param>
          * <param name="password">Password of the user, it doesn't have to be encoded</param>
-         * <returns>A token string, supposed to be stored by the client, it will be empty if the authentication wasn't
+         * <returns>A token string, supposed to be stored by the client, it will be null if the authentication wasn't
          * sucessful</returns>
          */
         public async Task<Session> CreateTokenAsync(string email, string password, DateTime tokenDate)

@@ -17,6 +17,10 @@ const tokenService = {
         var tokenString = Cookies.get(sessionToken);
         var expirationDateString = Date.parse(Cookies.get(sessionTokenExpirationDate) ?? '');
         return new Token({value: tokenString ?? '', expirationDate: new Date(expirationDateString)});
+    },
+    removeSessionToken: () => {
+        Cookies.remove(sessionToken);
+        Cookies.remove(sessionTokenExpirationDate);
     }
 }
 export default tokenService;

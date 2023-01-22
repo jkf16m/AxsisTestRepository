@@ -8,9 +8,6 @@ const Layout = ({children}:{ children?: React.ReactNode })=> {
                 <div className='container'>
                     <div className='row'>
                         <div className = 'col'>
-                            <NavMenu/>
-                        </div>
-                        <div className = 'col'>
                             {children}   
                         </div>     
                     </div>

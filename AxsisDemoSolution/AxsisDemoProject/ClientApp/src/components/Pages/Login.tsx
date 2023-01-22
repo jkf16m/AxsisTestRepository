@@ -7,7 +7,7 @@ import { actionCreators } from '../../store/TokenStore';
 
 interface ILoginProps {
   failedLogin: boolean;
-  loginAction: (token: string) => void;
+  loginAction: (token: Token) => void;
 }
 const Login = ({
   failedLogin,

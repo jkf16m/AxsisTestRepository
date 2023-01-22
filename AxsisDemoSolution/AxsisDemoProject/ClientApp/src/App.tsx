@@ -13,6 +13,7 @@ import { authService } from './services/authService';
 import AnonymousLayout from './components/Pages/AnonymousLayout';
 import { actionCreators } from './store/TokenStore';
 import { Token } from './services/entities/Token';
+import NavMenu from './components/Pages/AfterLoggingIn/NavMenu';
 
 const App = () => {
     const tokenState = useSelector((state: ApplicationState)=> state.token);
@@ -36,6 +37,9 @@ const App = () => {
     },[tokenState])
 
     return(
+    <>
+        
+        {loggedIn&&<NavMenu></NavMenu>}
         <Routes>
             <>
             
@@ -48,11 +52,11 @@ const App = () => {
                 :
                     <Route path='/*' element={<AnonymousLayout><Login
                         loginAction={
-                            (token:string)=>dispatch(
+                            (token:Token)=>dispatch(
                                 actionCreators.updateToken(
                                     {
                                         failedLogin: token ? false : true,
-                                        token: new Token({value: token, expires_at: new Date()})
+                                        token: new Token({...token.props})
                                     }
                                 )
                             )
@@ -62,6 +66,7 @@ const App = () => {
             }
             </>
         </Routes>
+    </>
 )}
 
 export default App;
