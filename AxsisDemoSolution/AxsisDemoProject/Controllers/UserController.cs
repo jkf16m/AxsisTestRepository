@@ -79,7 +79,7 @@ namespace AxsisDemoProject.Controllers
 
             var userInstance = _mapper.Map<User>(user);
 
-            var result = await _userService.UpdateUserAsync(userInstance, user.CurrentEmail, user.NewEmail, user.CurrentPassword, user.NewPassword);
+            var result = await _userService.UpdateUserAsync(userInstance, user.NewEmail, user.CurrentPassword, user.NewPassword);
 
             var updatingUserResultDTO = _mapper.Map<UpdatingUserResultDTO>(result);
 

@@ -14,8 +14,6 @@ using Microsoft.Extensions.Hosting;
 using AxsisDemoProject.Controllers.Domain.SharedSection.Services;
 using AutoMapper;
 using AxsisDemoProject.Controllers.Domain.SharedSection.Automapper;
-using AxsisDemoProject.Controllers.Domain.SessionSection.Ports;
-using AxsisDemoProject.Controllers.Domain.SessionSection.Adapters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -66,7 +64,6 @@ namespace AxsisDemoProject
             services.AddAuthorization();
 
             services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<ISessionRepository, SessionRepository>();
 
             services.AddScoped<EncryptorService>();
             services.AddScoped<AuthService>(o =>

@@ -4,6 +4,7 @@ using AxsisDemoProject.Controllers.Domain.DataLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AxsisDemoProject.Migrations
 {
     [DbContext(typeof(AxsisDemoContext))]
-    partial class AxsisDemoContextModelSnapshot : ModelSnapshot
+    [Migration("20230123171820_RemovedSession")]
+    partial class RemovedSession
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

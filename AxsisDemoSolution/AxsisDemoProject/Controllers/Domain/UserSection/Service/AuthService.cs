@@ -1,6 +1,4 @@
 ﻿using AxsisDemoProject.Controllers.Domain.DataLayer;
-using AxsisDemoProject.Controllers.Domain.SessionSection.Model;
-using AxsisDemoProject.Controllers.Domain.SessionSection.Ports;
 using AxsisDemoProject.Controllers.Domain.SharedSection.Services;
 using AxsisDemoProject.Controllers.Domain.UserSection.Model;
 using AxsisDemoProject.Controllers.Domain.UserSection.Ports;
