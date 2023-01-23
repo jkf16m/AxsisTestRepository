@@ -1,15 +1,10 @@
 import React, { useCallback } from "react";
 import { Button, Form, Table } from "react-bootstrap";
-import { authService } from "../../../../services/authService";
-import userService from "../../../../services/userService";
 import QueryUsersLayout from "./QueryUsersLayout";
 import InteractiveTable from "../../../reusable/InteractiveTable";
-import Modal from "../../../reusable/PopUp";
 import { User } from "../../../../services/entities/User";
 import EditUserModal from "./EditUserModal";
 import DeleteUserModal from "./DeleteUserModal";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../store/app/store";
 import { useDeleteUserMutation, useGetUsersQuery, useUpdateUserMutation } from "../../../../store/features/API/userApi";
 
 
@@ -24,8 +19,6 @@ const QueryUsers = ()=>{
 
     const [triggerUpdateUser, {data: dataUpdateUser}] = useUpdateUserMutation();
     const [triggerDeleteUser, {data: dataDeleteUser}] = useDeleteUserMutation();
-
-    const userCollectionStore = useSelector((state:RootState)=>state.userCollection)
 
     const handleUserDelete = useCallback(()=>{
         triggerDeleteUser(userToDelete.props.id);
