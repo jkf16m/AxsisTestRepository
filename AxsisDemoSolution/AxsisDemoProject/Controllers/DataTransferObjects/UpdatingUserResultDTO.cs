@@ -8,6 +8,8 @@
 
         public bool IsPasswordValid { get; set; }
 
+        public bool IsEmailValid { get; set; }
+
         public bool WasPasswordEncrypted { get; set; }
     }
 }

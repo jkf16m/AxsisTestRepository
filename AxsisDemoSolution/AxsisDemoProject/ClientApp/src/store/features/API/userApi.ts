@@ -16,6 +16,8 @@ export interface UpdatedUserResponse{
     bothPasswordsMatched: boolean;
     shouldBeUpdated: boolean;
     wasPasswordEncrypted: boolean;
+    isPasswordValid: boolean;
+    isEmailValid: boolean;
 }
 
 export const userApi = createApi({
@@ -36,7 +38,6 @@ export const userApi = createApi({
             query: ()=>`/`,
 
             transformResponse: (res: UserProps[])=>{
-                console.log(res);
                 return res.map(user => new User(user));
             },
             providesTags: ['User']

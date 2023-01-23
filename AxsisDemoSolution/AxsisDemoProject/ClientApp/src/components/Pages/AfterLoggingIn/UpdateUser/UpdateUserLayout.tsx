@@ -30,7 +30,7 @@ const UpdateUserLayout = (props: UpdateUserLayoutProps)=>{
             props:{
                 id: props.id,
                 name: nameRef.current?.value || "",
-                currentEmail: emailRef.current?.value || "",
+                newEmail: emailRef.current?.value || "",
                 currentPassword: currentPasswordRef.current?.value || "",
                 newPassword: newPasswordRef.current?.value || "",
                 sex: sexRef.current?.value || "male"
@@ -51,6 +51,11 @@ const UpdateUserLayout = (props: UpdateUserLayoutProps)=>{
             <Form.Group>
                 <Form.Label>Email</Form.Label>
                 {props.EmailField(emailRef)}
+                {triedAction && !props.updatedUserResponse.isEmailValid
+                    && <Form.Control.Feedback className="d-block invalid-feedback">
+                        This is not a valid email format
+                        </Form.Control.Feedback>
+                }
             </Form.Group>
             <Form.Group>
                 <Form.Label>Name</Form.Label>
@@ -59,7 +64,7 @@ const UpdateUserLayout = (props: UpdateUserLayoutProps)=>{
             <Form.Group>
                 <Form.Label>Current Password</Form.Label>
                 {props.CurrentPasswordField(currentPasswordRef)}
-                {triedAction && props.updatedUserResponse.bothPasswordsMatched
+                {triedAction && !props.updatedUserResponse.bothPasswordsMatched
                     && <Form.Control.Feedback className="d-block invalid-feedback">
                         Current password is incorrect
                     </Form.Control.Feedback>
@@ -68,6 +73,20 @@ const UpdateUserLayout = (props: UpdateUserLayoutProps)=>{
             <Form.Group>
                 <Form.Label>New Password</Form.Label>
                 {props.NewPasswordField(newPasswordRef)}
+                {
+                triedAction && !props.updatedUserResponse.isPasswordValid
+                    && (newPasswordRef.current?.value !== "" ?? false)
+                    && <Form.Control.Feedback className='invalid-feedback d-block'>
+                    This is not a valid password, must have at least:
+                    <ul>
+                        <li>10 characters</li>
+                        <li>1 uppercase letter</li>
+                        <li>1 lowercase letter</li>
+                        <li>1 number</li>
+                        <li>1 special character</li>
+                    </ul>
+                </Form.Control.Feedback>
+                }
             </Form.Group>
             <Row>
                 <Col xs="5">

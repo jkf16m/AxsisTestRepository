@@ -41,7 +41,8 @@ const QueryUsers = ()=>{
                     />
                 }
                 editUserModal={
-                    (showEditModal ? <EditUserModal user={userToEdit}
+                    (showEditModal ? <EditUserModal
+                        user={userToEdit}
                         onClose={()=>{setShowEditModal(false);}}
                         onAccept={(user)=>{
                             triggerUpdateUser(user.props);

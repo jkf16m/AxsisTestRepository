@@ -24,7 +24,7 @@ export class User implements Entity{
 export interface UserUpdateInfoProps{
     id: number;
     name: string;
-    currentEmail: string;
+    newEmail: string;
     currentPassword: string;
     newPassword: string;
     sex: string;

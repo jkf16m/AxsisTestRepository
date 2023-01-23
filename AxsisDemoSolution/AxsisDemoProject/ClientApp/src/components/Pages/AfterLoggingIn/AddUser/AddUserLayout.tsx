@@ -60,7 +60,6 @@ const AddUserLayout = (props:AddUserLayoutProps
             sex: sexRef.current?.value || ""
         }); 
         props.onActionAsync(user);
-        console.log("handleClick->result: " + props.successRegisteredUser);
         setTriedAction(prev=>true);
         setIsPasswordSame(prev=>passwordSame);
 
