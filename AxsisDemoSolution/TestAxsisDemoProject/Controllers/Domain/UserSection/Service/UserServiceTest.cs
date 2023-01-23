@@ -64,15 +64,16 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
         }
 
         [TestMethod]
+        // falta actualizar
         public async Task UpdateExistingUserWithTheSameId()
         {
             var updateDanielUser = new User(
-                1, "Daniel", "jkf19m@gmail.com", "1234", false, sex: "female", DateTime.MinValue);
+                1, "Daniel", "jkf19m@gmail.com", "12345", true, sex: "female", DateTime.MinValue);
 
-            var result = await userService.UpdateUserAsync(updateDanielUser);
+            var result = await userService.UpdateUserAsync(updateDanielUser, updateDanielUser.Email, updateDanielUser.Password, "contraseña1A@");
 
             Assert.AreEqual(
-                new UpdatingUserResult(true,true).shouldBeUpdated
+                new UpdatingUserResult(true,true, true, true).shouldBeUpdated
                 , result.shouldBeUpdated
                 );
         }
@@ -81,12 +82,12 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
         public async Task WontUpdateUserIfSentPasswordAndStoredPasswordDoesntMatch()
         {
             var updateDanielUser = new User(
-                1, "Daniel", "jkf19m@gmail.com", "123224", false, sex: "female", DateTime.MinValue);
+                1, "Daniel", "jkf19m@gmail.com", "122224", false, sex: "female", DateTime.MinValue);
 
-            var result = await userService.UpdateUserAsync(updateDanielUser);
+            var result = await userService.UpdateUserAsync(updateDanielUser, "ao@gma", updateDanielUser.Password, "js");
 
             Assert.AreEqual(
-                new UpdatingUserResult(false,true).shouldBeUpdated
+                new UpdatingUserResult(false,true, false, false).shouldBeUpdated
                 , result.shouldBeUpdated
                 );
         }

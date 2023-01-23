@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TestAxsisDemoProject.Controllers.Domain.SessionSection.Adapters;
 using TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters;
 
 namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
@@ -19,7 +18,7 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
 
         [TestInitialize]
         public void Init() {
-            _authService = new AuthService(new UserMockRepository(), new SessionMockRepository(), new EncryptorService());
+            _authService = new AuthService(new UserMockRepository(), new EncryptorService(), "", "", UTF8Encoding.UTF8.GetBytes("test"));
         }
 
 
@@ -28,7 +27,7 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
         {
             var tokenDate = DateTime.Parse("2022-01-01");
             Console.WriteLine(tokenDate.ToString());
-            var result = await _authService.CreateTokenAsync("jkf16m@gmail.com", "1234", tokenDate);
+            var result = await _authService.GenerateAccessTokenAsync("jkf16m@gmail.com", "1234");
 
 
             Assert.AreEqual(
@@ -40,23 +39,9 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Service
         public async Task FailedAuthentication()
         {
             var tokenDate = DateTime.Parse("2022-02-02");
-            var result = await _authService.CreateTokenAsync("jkf16m@gmail.com", "12345", tokenDate);
+            var result = await _authService.GenerateAccessTokenAsync("jkf16m@gmail.com", "1235");
             Assert.AreEqual("",result);
         }
 
-        [TestMethod]
-        public async Task SuccessfulTokenExpiration()
-        {
-            var wasTokenExpired = await _authService.ExpireAsync("jkf16m@gmail.com", "293ae30a478dd9a4f8098586ac1291e2edcfe9c4cb2088ee75013010f0b2229a");
-            Assert.IsTrue(wasTokenExpired);
-        }
-
-        [TestMethod]
-        public async Task WrongTokenExpiration()
-        {
-            var wasTokenExpired = await _authService.ExpireAsync("jkf16m@gmail.com", "BBLABLABLAESTE NO ES EL TOKEN JAJA");
-            Assert.IsFalse(wasTokenExpired);
-
-        }
     }
 }

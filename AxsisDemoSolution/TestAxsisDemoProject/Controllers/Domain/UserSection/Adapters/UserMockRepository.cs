@@ -96,7 +96,7 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters
                 if(u.Id == userToUpdate.Id)
                 {
                     return new User(u.Id, userToUpdate.Name, userToUpdate.Email, userToUpdate.Password,
-                        userToUpdate.Status, userToUpdate.Sex, userToUpdate.CreationDate);
+                        userToUpdate.Status ?? false, userToUpdate.Sex, userToUpdate.CreationDate ?? DateTime.MinValue);
                 }
                 else
                 {
@@ -105,6 +105,18 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters
             }).ToList();
 
             return Task.CompletedTask;
+        }
+
+        public Task<bool> AuthenticateActiveUsersAsync(string email, string password)
+        {
+            var ret = _users.Any(q => q.Email == email && q.Password == password);
+            return Task.FromResult(ret);
+
+        }
+
+        public Task<User> GetByEmailAndPasswordAsync(string email, string password)
+        {
+            throw new NotImplementedException();
         }
     }
 }
