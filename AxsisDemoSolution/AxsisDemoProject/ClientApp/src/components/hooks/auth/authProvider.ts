@@ -1,13 +1,10 @@
 import { createAuthProvider } from "react-token-auth";
 
-type Session = { accessToken : string, refreshToken: string};
+export type Session = { accessToken : string, refreshToken: string};
 
 export const { useAuth, authFetch, login, logout, getSessionState, getSession } = createAuthProvider<Session>({
     getAccessToken: session => session.accessToken,
     storage: localStorage,
-    onHydratation: (session) => {
-        return session;
-    },
     onUpdateToken: (token) => fetch("http://localhost:3000/api/session", {
         method: "PUT",
         body: token.refreshToken

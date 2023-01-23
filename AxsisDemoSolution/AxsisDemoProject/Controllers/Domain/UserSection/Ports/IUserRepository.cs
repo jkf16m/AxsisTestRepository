@@ -20,8 +20,10 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Ports
          * <param name="password">Password ALREADY ENCRYPTED</param>
          * <returns>True if the repository has the user else False</returns>
          */
-        Task<bool> HasAnyAsync(string email, string password);
+        Task<bool> AuthenticateAsync(string email, string password);
         Task<bool> IsEmailAlreadyUsedAsync(string email);
+
+        Task<bool> AuthenticateActiveUsersAsync(string email, string password);
 
          /**
          <summary>

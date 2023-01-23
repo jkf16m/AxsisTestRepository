@@ -1,5 +1,5 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
-import { getSession, getSessionState, useAuth } from '../../../components/hooks/auth/authProvider';
+import { getSession, getSessionState, Session, useAuth } from '../../../components/hooks/auth/authProvider';
 import { API_URL } from '../../../services/constants';
 import { User, UserProps, UserUpdateInfo, UserUpdateInfoProps } from '../../../services/entities/User';
 import { RootState } from '../../app/store';
@@ -23,9 +23,9 @@ export const userApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: `${API_URL}/user`,
         prepareHeaders: (headers) => {
-            const token = (getSessionState() as any)?.accessToken.accessToken;
+            const token = (getSessionState());
             if(token){
-                headers.set('authorization', `Bearer ${token}`);
+                headers.set('authorization', `Bearer ${token.accessToken}`);
             }
             return headers;
         }

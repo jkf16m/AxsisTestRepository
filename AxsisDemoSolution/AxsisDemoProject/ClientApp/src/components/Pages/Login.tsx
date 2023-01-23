@@ -16,9 +16,9 @@ const Login = ({
 
   const onSubmit = async() => {
     if(!emailRef.current || !passwordRef.current) return;
-    const result = await authService.tryToLoginAsync(emailRef.current.value, passwordRef.current.value);
-    loginAction(result);
-    if(!result) setFailedLogin(true);
+    const [result,wasUnauthorized] = await authService.tryToLoginAsync(emailRef.current.value, passwordRef.current.value);
+    if(!wasUnauthorized) loginAction(result.accessToken);
+    if(wasUnauthorized) setFailedLogin(true);
   }
 
   return (

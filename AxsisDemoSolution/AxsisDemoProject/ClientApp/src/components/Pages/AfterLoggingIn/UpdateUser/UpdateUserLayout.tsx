@@ -1,16 +1,20 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import RenderFunctionRef from "../../../../lib/types";
 import { User, UserUpdateInfo } from "../../../../services/entities/User";
+import { UpdatedUserResponse } from "../../../../store/features/API/userApi";
+
 
 interface UpdateUserLayoutProps {
     id: number;
+    wasUpdated: boolean;
     NameField: RenderFunctionRef<HTMLInputElement>;
     CurrentPasswordField: RenderFunctionRef<HTMLInputElement>;
     NewPasswordField: RenderFunctionRef<HTMLInputElement>;
     SexField: RenderFunctionRef<HTMLSelectElement>;
     EmailField: RenderFunctionRef<HTMLInputElement>;
     onAction: (userUpdateInfo: UserUpdateInfo)=>void;
+    updatedUserResponse: UpdatedUserResponse;
 }
 const UpdateUserLayout = (props: UpdateUserLayoutProps)=>{
     const nameRef = React.useRef<HTMLInputElement>(null);
@@ -19,6 +23,27 @@ const UpdateUserLayout = (props: UpdateUserLayoutProps)=>{
     const sexRef = React.useRef<HTMLSelectElement>(null);
     const emailRef = React.useRef<HTMLInputElement>(null);
 
+    const [triedAction, setTriedAction] = React.useState<boolean>(false);
+
+    const handleClick = useCallback(async ()=>{
+        props.onAction({
+            props:{
+                id: props.id,
+                name: nameRef.current?.value || "",
+                currentEmail: emailRef.current?.value || "",
+                currentPassword: currentPasswordRef.current?.value || "",
+                newPassword: newPasswordRef.current?.value || "",
+                sex: sexRef.current?.value || "male"
+            }
+        });
+        setTriedAction(true);
+    },[]);
+
+    useEffect(()=>{
+        if(props.wasUpdated){
+            setTriedAction(false);
+        }
+    },[props.wasUpdated])
 
     return(
         <>
@@ -34,6 +59,11 @@ const UpdateUserLayout = (props: UpdateUserLayoutProps)=>{
             <Form.Group>
                 <Form.Label>Current Password</Form.Label>
                 {props.CurrentPasswordField(currentPasswordRef)}
+                {triedAction && props.updatedUserResponse.bothPasswordsMatched
+                    && <Form.Control.Feedback className="d-block invalid-feedback">
+                        Current password is incorrect
+                    </Form.Control.Feedback>
+                }
             </Form.Group>
             <Form.Group>
                 <Form.Label>New Password</Form.Label>
@@ -49,18 +79,7 @@ const UpdateUserLayout = (props: UpdateUserLayoutProps)=>{
             </Row>
             <br/>
             <Form.Group>
-                <Button variant="primary" onClick={async ()=>{
-                    props.onAction({
-                        props:{
-                            id: props.id,
-                            name: nameRef.current?.value || "",
-                            currentEmail: emailRef.current?.value || "",
-                            currentPassword: currentPasswordRef.current?.value || "",
-                            newPassword: newPasswordRef.current?.value || "",
-                            sex: sexRef.current?.value || "male"
-                        }
-                    });
-                }}>Update</Button>
+                <Button variant="primary" onClick={handleClick}>Update</Button>
             </Form.Group>
 
         </Form>

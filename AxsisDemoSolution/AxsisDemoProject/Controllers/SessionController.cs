@@ -40,6 +40,7 @@ namespace AxsisDemoProject.Controllers
             };
 
             if (session == null) return BadRequest("Invalid client request");
+            else if (session.AccessToken.IsNullOrEmpty()) return Unauthorized();
             return Ok(session);
         }
 

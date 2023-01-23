@@ -47,7 +47,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
         {
             var userId = await _userRepository.GetIdByEmailAsync(email);
             var user = new User(userId, "", email, password, false, "", DateTime.Now, _encryptorService.Encrypt);
-            if (await _userRepository.HasAnyAsync(user.Email, user.EncryptedPassword))
+            if (await _userRepository.AuthenticateActiveUsersAsync(user.Email, user.EncryptedPassword))
             {
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {

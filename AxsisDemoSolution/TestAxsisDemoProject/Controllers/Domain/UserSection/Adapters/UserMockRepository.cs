@@ -64,7 +64,7 @@ namespace TestAxsisDemoProject.Controllers.Domain.UserSection.Adapters
             return Task.FromResult(_users.First(q => q.Email == email).Id);
         }
 
-        public Task<bool> HasAnyAsync(string email, string password)
+        public Task<bool> AuthenticateAsync(string email, string password)
         {
             return Task.FromResult(_users.Exists(user => user.Email == email && user.Password.Equals(password,StringComparison.CurrentCultureIgnoreCase)));
         }

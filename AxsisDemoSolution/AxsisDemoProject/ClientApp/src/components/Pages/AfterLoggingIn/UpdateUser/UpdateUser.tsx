@@ -14,6 +14,7 @@ const UpdateUser = (props: UpdateUserProps)=>{
 
     return (
         <UpdateUserLayout
+            updatedUserResponse={data??{bothPasswordsMatched:false, shouldBeUpdated:false, wasPasswordEncrypted: false}}
             id={user.props.id}
             CurrentPasswordField={(ref) =><Form.Control ref={ref}></Form.Control>}
             EmailField={(ref) =><Form.Control defaultValue={user.props.currentEmail} ref={ref}></Form.Control>}
@@ -23,6 +24,7 @@ const UpdateUser = (props: UpdateUserProps)=>{
                 <option>male</option>
                 <option>female</option>
             </Form.Select>}
+            wasUpdated={data?.shouldBeUpdated ?? false}
             onAction={async (userUpdateInfo) =>{
                 trigger(userUpdateInfo.props);
             }}

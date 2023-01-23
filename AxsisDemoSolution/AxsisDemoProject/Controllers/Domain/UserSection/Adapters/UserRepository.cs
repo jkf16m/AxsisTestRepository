@@ -70,9 +70,14 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Adapters
             return user.Id;
         }
 
-        public async Task<bool> HasAnyAsync(string email, string password)
+        public async Task<bool> AuthenticateAsync(string email, string encryptedPassword)
         {
-            return await _axsisDemoContext.Users.AnyAsync(q => q.Email == email && q.Password == password && q.Status == true);
+            return await _axsisDemoContext.Users.AnyAsync(q => q.Email == email && q.Password == encryptedPassword );
+        }
+
+        public async Task<bool> AuthenticateActiveUsersAsync(string email, string encryptedPassword)
+        {
+            return await _axsisDemoContext.Users.AnyAsync(q => q.Email == email && q.Password == encryptedPassword && q.Status == true);
         }
 
         public async Task<bool> IsEmailAlreadyUsedAsync(string email)

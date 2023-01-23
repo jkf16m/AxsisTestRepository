@@ -13,7 +13,7 @@ interface QueryUsersLayoutProps {
 const QueryUsersLayout = (props:QueryUsersLayoutProps) =>{
 
     return (
-        <div style={{overflowX: 'auto'}}>
+        <div>
             {props.isFetching ? <Spinner animation="border"/> : <></>}
             {props.table}
             {props.editUserModal}

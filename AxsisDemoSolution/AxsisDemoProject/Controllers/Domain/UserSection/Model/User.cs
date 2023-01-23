@@ -49,7 +49,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
             }
             set {
                 _encryptionPasswordAlgorithm= value;
-                EncryptedPassword = _encryptionPasswordAlgorithm?.Invoke($"{Email}:{Password}") ?? "";
+                EncryptedPassword = _encryptionPasswordAlgorithm?.Invoke($"{Email.ToLower()}:{Password}") ?? "";
                 IsPasswordEncrypted = !EncryptedPassword.IsNullOrEmpty();
             }
         }

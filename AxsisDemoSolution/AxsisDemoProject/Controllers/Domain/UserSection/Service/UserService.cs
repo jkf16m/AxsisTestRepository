@@ -75,7 +75,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
             var storedUserTempInstance = new User(
                 userNewUpdatedState.Id,
                 userNewUpdatedState.Name,
-                currentEmail,
+                storedUser.Email,
                 currentPassword,
                 userNewUpdatedState.Status ?? false,
                 userNewUpdatedState.Sex,
@@ -86,7 +86,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
 
             // if both passwords matches, then it it will return true here, so it would be safe to update this user
             // with this info.
-            bool bothPasswordsMatched = await _userRepository.HasAnyAsync(storedUser.Email, storedUserTempInstance.EncryptedPassword);
+            bool bothPasswordsMatched = await _userRepository.AuthenticateAsync(storedUser.Email, storedUserTempInstance.EncryptedPassword);
 
             // this is the new state, derived from the stored one as defaults values
             var userToUploadAndUpdate = new User(
