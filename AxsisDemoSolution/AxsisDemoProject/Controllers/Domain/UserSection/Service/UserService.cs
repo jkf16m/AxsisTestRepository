@@ -82,7 +82,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
                 storedUser.CreationDate ?? DateTime.MinValue,
                 _encryptorService.Encrypt
             );
-            
+
 
             // if both passwords matches, then it it will return true here, so it would be safe to update this user
             // with this info.
@@ -100,16 +100,17 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
                 encryptionAlgorithmFunction: _encryptorService.Encrypt
             );
 
-            userToUploadAndUpdate.EncryptPassword();
 
             var updatingUserResult = new UpdatingUserResult(
                 bothPasswordsMatched: bothPasswordsMatched,
-                wasPasswordEncrypted: userToUploadAndUpdate.IsPasswordEncrypted
+                wasPasswordEncrypted: userToUploadAndUpdate.IsPasswordEncrypted,
+                isPasswordValid: userToUploadAndUpdate.IsPasswordValid()
             );
 
 
             if (updatingUserResult.shouldBeUpdated && userToUploadAndUpdate.IsPasswordEncrypted)
             {
+                userToUploadAndUpdate.EncryptPassword();
                 await _userRepository.UpdateAsync(userToUploadAndUpdate);
             }
             return updatingUserResult;
