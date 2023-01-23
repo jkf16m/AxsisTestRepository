@@ -95,7 +95,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
 
         private static readonly string[] _regularExpressionsToMatch =
         {
-                ".{7,}",            // at least 7 characters
+                ".{10,}",           // at least 10 characters
                 @"(?=.*\d)",        // at least has one number
                 @"(?=[a-z])",       // at least has one lowercase letter
                 @"(?=[A-Z])",       // at least has one capital letter
