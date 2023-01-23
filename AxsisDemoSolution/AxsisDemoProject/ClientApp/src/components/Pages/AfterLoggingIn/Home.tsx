@@ -1,33 +1,43 @@
-import * as React from 'react';
-import { Card, Col, Row } from 'react-bootstrap';
-import { connect } from 'react-redux';
-import AddUser from './AddUser/AddUser';
-import QueryUsers from './QueryUsers/QueryUsers';
+import React from "react";
 
-const UsersScreen = () => (
-  <>
-    <Row><Col lg="3" >
-      <Card>
-        <Card.Header>
-          <Card.Title as="h5">Add new user</Card.Title>
-        </Card.Header>
-        <Card.Body>
-          <AddUser/>
-        </Card.Body>
-      </Card>
-    </Col>
-    <br/>
-    <Col xs="12" sm="12" md="12" lg="9">
-      <Card>
-        <Card.Header>
-          <Card.Title as="h5">Current users</Card.Title>
-        </Card.Header>
-        <Card.Body style={{height:'80vh', overflowY:'auto', overflowX: 'auto'}}>
-          <QueryUsers/>
-        </Card.Body>
-      </Card>
-    </Col></Row>
-  </>
-);
+const Home = ()=>{
+    return(
+        <div>
+            <h4>Español</h4>
+            <h2>Acerca de este proyecto</h2>
+            <p>Este proyecto es solo una demostración simple, donde puedes:</p>
+            <ul>
+                <li>Iniciar sesión</li>
+                <li>Cerrar sesión</li>
+                <li>Agregar usuarios</li>
+                <li>Ver información de usuarios</li>
+                <li>Editar información de usuarios</li>
+                <li>Desactivar usuarios</li>
+            </ul>
+            
+            <h4>English</h4>
+            <h2>About this project</h2>
+            <p>This project is just a simple demo, where you can:</p>
+            <ul>
+                <li>Log in</li>
+                <li>Log out</li>
+                <li>Add users</li>
+                <li>Watch users info</li>
+                <li>Edit users info</li>
+                <li>Deactivate users</li>
+            </ul>
 
-export default UsersScreen;
+            <footer>
+                <p>Made with:</p>
+                <ul>
+                    <li>React</li>
+                    <li>Redux-Toolkit</li>
+                    <li>.NET CORE 6</li>
+                    <li>Entity Framework Core</li>
+                    <li>SQL Server</li>
+                </ul>
+            </footer>
+        </div>
+    )
+}
+export default Home;
