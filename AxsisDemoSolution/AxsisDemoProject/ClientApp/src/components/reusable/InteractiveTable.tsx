@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Form, Table } from "react-bootstrap";
+import { Button, Form, Table } from "react-bootstrap";
 import { Entity, Props } from "../../lib/interfaces";
 import { authService } from "../../services/authService";
 import { User, UserPropsKey } from "../../services/entities/User";
@@ -52,7 +52,7 @@ const InteractiveTable = <T extends Entity,>(props: InteractiveTableProps<T>) =>
                 </tr>
             </thead>
             <tbody>
-                {props.objects.map((user, index) =>{
+                {props.objects.slice().reverse().map((user, index) =>{
                     return (
                         <tr key={index}>
                             {
@@ -69,12 +69,12 @@ const InteractiveTable = <T extends Entity,>(props: InteractiveTableProps<T>) =>
                                 )
                             }
                             <td>
-                                <button onClick={()=>{props.onEdit(user)}}>Edit</button>
+                                <Button variant={'primary'} className='btn-sm' onClick={()=>{props.onEdit(user)}}>Edit</Button>
                             </td>
                             <td>
                                 {
                                     props.showDeleteButton!(user) &&
-                                    <button onClick={()=>{props.onDelete(user)}}>Delete</button>
+                                    <Button variant={'warning'} className='btn-sm' onClick={()=>{props.onDelete(user)}}>Deactivate</Button>
                                 }
                             </td>
                         </tr>

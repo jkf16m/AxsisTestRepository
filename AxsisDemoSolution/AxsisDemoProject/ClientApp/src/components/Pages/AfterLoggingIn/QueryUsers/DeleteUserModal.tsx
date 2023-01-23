@@ -15,10 +15,17 @@ const DeleteUserModal = (props: DeleteUserModalProps)=>{
             <Modal
                 size="sm"
                 title="Delete user"
-                body={<><p>Are you sure you want to delete this user?</p></>}
+                body={<>
+                    <p>Are you sure you want to deactivate this user?</p>
+                    <ul>
+                        <li>Name: {props.user.props.name}</li>
+                        <li>Email: {props.user.props.email}</li>
+                        <li>Sex: {props.user.props.sex}</li>
+                    </ul>
+                </>}
                 buttons={(onAccept, onClose) =>{
                     return <>
-                        <Button variant="danger" onClick={onAccept}>Delete</Button>
+                        <Button variant="danger" onClick={onAccept}>Deactivate</Button>
                         <Button variant="secondary" onClick={onClose}>Cancel</Button>
                     </>
                 }}
