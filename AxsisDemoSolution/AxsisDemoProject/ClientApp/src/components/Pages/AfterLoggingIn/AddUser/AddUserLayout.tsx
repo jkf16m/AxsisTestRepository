@@ -1,5 +1,5 @@
 import React, { ReactNode, useCallback, useEffect, useRef } from 'react'
-import { Button, Col, Form, Row } from 'react-bootstrap';
+import { Button, Col, Form, Row, Spinner } from 'react-bootstrap';
 import RenderFunctionRef from '../../../../lib/types';
 import { User } from '../../../../services/entities/User';
 import { AddedUserResponse, useAddUserMutation } from '../../../../store/features/API/userApi';
@@ -11,6 +11,7 @@ interface ErrorUserAdded {
     userWasAdded: boolean;
 }
 interface AddUserLayoutProps {
+    isFetching: boolean;
     EmailField: RenderFunctionRef<HTMLInputElement>;
     NameField: RenderFunctionRef<HTMLInputElement>;
     PasswordField:  RenderFunctionRef<HTMLInputElement>;
@@ -149,7 +150,14 @@ const AddUserLayout = (props:AddUserLayoutProps
             </Row>
             <br/>
             <Form.Group>
-                <Button variant={"primary"} onClick={handleClick}>Add user</Button>
+                <Row>
+                    <Col>
+                        <Button variant={"primary"} onClick={handleClick}>Add user</Button>
+                    </Col>
+                    <Col>
+                        {props.isFetching ? <Spinner animation="border" variant="primary" /> : null}
+                    </Col>
+                </Row>
             </Form.Group>
             {
                 triedAction && props.successRegisteredUser &&

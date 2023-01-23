@@ -9,7 +9,7 @@ import { useAppSelector } from "../../../hooks/redux";
 import AddUserLayout from "./AddUserLayout";
 
 const AddUser =()=>{
-    const [trigger, {data, isError, isSuccess}] = useAddUserMutation();
+    const [trigger, {data, isError, isSuccess, isLoading}] = useAddUserMutation();
     const [user, setUser] = React.useState<User>(new User());
     
     const handleAddUser = useCallback((userP: User)=>{
@@ -22,6 +22,7 @@ const AddUser =()=>{
 
     return (
         <AddUserLayout
+            isFetching = {isLoading}
             EmailField={(ref)=><Form.Control ref={ref}></Form.Control>}
             NameField={(ref)=><Form.Control ref={ref}></Form.Control>}
             PasswordField={(ref)=><Form.Control type="password" ref={ref}></Form.Control>}

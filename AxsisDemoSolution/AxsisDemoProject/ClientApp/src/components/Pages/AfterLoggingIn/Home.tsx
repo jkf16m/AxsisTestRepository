@@ -22,7 +22,7 @@ const UsersScreen = () => (
         <Card.Header>
           <Card.Title as="h5">Current users</Card.Title>
         </Card.Header>
-        <Card.Body>
+        <Card.Body style={{height:'80vh', overflowY:'auto'}}>
           <QueryUsers/>
         </Card.Body>
       </Card>

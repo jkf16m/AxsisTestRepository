@@ -20,7 +20,7 @@ const QueryUsers = ()=>{
     const [userToEdit, setUserToEdit] = React.useState(new User());
     const [userToDelete, setUserToDelete] = React.useState(new User());
 
-    const {data, refetch} = useGetUsersQuery();
+    const {data, refetch, isFetching} = useGetUsersQuery();
 
     const [triggerUpdateUser, {data: dataUpdateUser}] = useUpdateUserMutation();
     const [triggerDeleteUser, {data: dataDeleteUser}] = useDeleteUserMutation();
@@ -38,6 +38,7 @@ const QueryUsers = ()=>{
         <>
             <Button onClick={()=>{refetch()}}>Reload data</Button>
             <QueryUsersLayout
+                isFetching = {isFetching}
                 table={
                     <InteractiveTable
                         objects={data ?? []}
