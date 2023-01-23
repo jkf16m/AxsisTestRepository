@@ -46,5 +46,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Ports
          */
         Task<IEnumerable<User>> GetAllAsync();
         Task<User> GetByIdAsync(int id);
+
+        Task<User> GetByEmailAndPasswordAsync(string email, string password);
     }
 }

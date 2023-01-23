@@ -4,15 +4,22 @@ import { authService } from '../../services/authService';
 import { Token } from '../../services/entities/Token';
 
 interface ILoginProps {
-  failedLogin: boolean;
-  loginAction: (token: Token) => void;
+  loginAction: (token: string) => void;
 }
 const Login = ({
-  failedLogin,
   loginAction
 }:ILoginProps) =>{
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
+
+  const [failedLogin, setFailedLogin] = React.useState(false);
+
+  const onSubmit = async() => {
+    if(!emailRef.current || !passwordRef.current) return;
+    const result = await authService.tryToLoginAsync(emailRef.current.value, passwordRef.current.value);
+    loginAction(result);
+    if(!result) setFailedLogin(true);
+  }
 
   return (
     <div className={"container h-100 w-100"}>
@@ -57,11 +64,7 @@ const Login = ({
             <button
               type='button'
               className={"btn btn-primary"}
-              onClick={async() => {
-                if(!emailRef.current || !passwordRef.current) return;
-                const result = await authService.tryToLoginAsync(emailRef.current.value, passwordRef.current.value);
-                loginAction(result);
-              }}
+              onClick={onSubmit}
             >Login</button>
           </div>
         </div>

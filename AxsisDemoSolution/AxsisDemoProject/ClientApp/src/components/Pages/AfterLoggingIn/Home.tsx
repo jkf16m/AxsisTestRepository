@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import AddUser from './AddUser/AddUser';
 import QueryUsers from './QueryUsers/QueryUsers';
 
-const Home = () => (
+const UsersScreen = () => (
   <>
-    <Row><Col md="6">
+    <Row><Col lg="3" >
       <Card>
         <Card.Header>
           <Card.Title as="h5">Add new user</Card.Title>
@@ -17,7 +17,7 @@ const Home = () => (
       </Card>
     </Col>
     <br/>
-    <Col xs="12" sm="12" md="6">
+    <Col xs="12" sm="12" md="12" lg="9">
       <Card>
         <Card.Header>
           <Card.Title as="h5">Current users</Card.Title>
@@ -30,4 +30,4 @@ const Home = () => (
   </>
 );
 
-export default connect()(Home);
+export default UsersScreen;

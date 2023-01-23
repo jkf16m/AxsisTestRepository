@@ -12,22 +12,24 @@ interface EditUserModalProps {
 
 const EditUserModal = (props: EditUserModalProps) => {
     const [user, setUser] = React.useState(new UserUpdateInfo({
-        email: props.user.props.email,
+        id: props.user.props.id,
         name: props.user.props.name,
+        currentEmail: props.user.props.email,
         newPassword: "",
-        password: props.user.props.password,
+        currentPassword: "",
         sex: props.user.props.sex
     }));
+
     return(<Modal
+        size="sm"
         title="Edit user"
         body={<>
-            <UpdateUser/>
+            <UpdateUser editedUserDefaultValues={user}/>
         </>}
         onClose={()=>props.onClose()}
         onAccept={()=>props.onAccept(user)}
-        buttons={(onAccept, onClose) =>{
+        buttons={(onAccept, onClose, fromBody) =>{
             return <>
-                <Button variant="primary" onClick={onAccept}>Update</Button>
                 <Button variant="secondary" onClick={onClose}>Cancel</Button>
             </>
         }}

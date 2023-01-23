@@ -12,6 +12,8 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
 {
     public class User : IEquatable<User>
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; private set; }
         public string Name { get; private set; }
         public string Email { get; private set; }
@@ -19,6 +21,18 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
         public bool? Status { get; private set; }
         public string Sex { get; private set; }
         public DateTime? CreationDate { get; private set; }
+      /*  public string RefreshToken { get; private set; }
+        public DateTime RefreshTokenExpirationDate { get; private set; }*/
+
+        private AccessCredentials _credentials;
+        [NotMapped]
+        public AccessCredentials Credentials { get {
+                return _credentials;
+            }
+            private set { 
+                _credentials = new AccessCredentials() { Email = value.Email, Password = value.Password };
+            }
+        }
 
         [NotMapped]
         public bool IsPasswordEncrypted {get; private set;}
@@ -44,7 +58,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
 
         private User() { }
         public User(int id, string name, string email, string password, bool status, string sex, DateTime creationDate,
-            Func<string, string> encryptionAlgorithmFunction = null
+            Func<string, string> encryptionAlgorithmFunction = null, string refreshToken = "", DateTime? refreshTokenExpirationDate = null
             )
         {
             Id = id;
@@ -54,6 +68,8 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Model
             Sex = sex;
             IsPasswordEncrypted = false;
             EncryptionPasswordAlgorithm = encryptionAlgorithmFunction;
+            /*RefreshToken = refreshToken;
+            RefreshTokenExpirationDate = refreshTokenExpirationDate ?? DateTime.MinValue;*/
         }
 
         public User Disable()

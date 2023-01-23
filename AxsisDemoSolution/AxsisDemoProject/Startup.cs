@@ -69,7 +69,16 @@ namespace AxsisDemoProject
             services.AddTransient<ISessionRepository, SessionRepository>();
 
             services.AddScoped<EncryptorService>();
-            services.AddScoped<AuthService>();
+            services.AddScoped<AuthService>(o =>
+            {
+                return new AuthService(
+                    userRepository: o.GetService<IUserRepository>(),
+                    encryptorService: o.GetService<EncryptorService>(),
+                    issuer: Configuration["Jwt:Issuer"],
+                    audience: Configuration["Jwt:Audience"],
+                    key: Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])
+                ) ;
+            });
             services.AddScoped<UserService>();
 
             // In production, the React files will be served from this directory
@@ -105,14 +114,14 @@ namespace AxsisDemoProject
                 app.UseHsts();
             }
 
-            app.UseAuthentication();
-            app.UseAuthorization();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
+            app.UseAuthentication();
             app.UseRouting();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

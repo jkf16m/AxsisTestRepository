@@ -33,7 +33,7 @@ export function reducer(state: User | undefined, action: UserAction){
             name: '',
             password: '',
             status: false,
-            created_at: undefined,
+            creationDate: undefined,
             sex: ''
         })
     }

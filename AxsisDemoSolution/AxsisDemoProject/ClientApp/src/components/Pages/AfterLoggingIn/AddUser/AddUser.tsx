@@ -1,13 +1,24 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { Form } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { authService } from "../../../../services/authService";
+import { User } from "../../../../services/entities/User";
 import userService from "../../../../services/userService";
+import { useAddUserMutation } from "../../../../store/features/API/userApi";
 import { useAppSelector } from "../../../hooks/redux";
 import AddUserLayout from "./AddUserLayout";
 
 const AddUser =()=>{
-    const tokenState = useAppSelector(s=>s.token);
+    const [trigger, {data, isError, isSuccess}] = useAddUserMutation();
+    const [user, setUser] = React.useState<User>(new User());
+    
+    const handleAddUser = useCallback((userP: User)=>{
+        setUser(userP);
+    },[data])
+
+    useEffect(()=>{
+        trigger(user.props)
+    },[user])
 
     return (
         <AddUserLayout
@@ -15,15 +26,19 @@ const AddUser =()=>{
             NameField={(ref)=><Form.Control ref={ref}></Form.Control>}
             PasswordField={(ref)=><Form.Control type="password" ref={ref}></Form.Control>}
             ConfirmPasswordField={(ref)=><Form.Control type="password" ref={ref}></Form.Control>}
-            StatusField={(ref)=><Form.Check ref={ref}></Form.Check>}
+            StatusField={(ref)=><Form.Check defaultChecked={true} ref={ref}></Form.Check>}
             SexField={(ref)=><Form.Select ref={ref}>
                 <option>male</option>
                 <option>female</option>
             </Form.Select>}
-            onActionAsync={async (user)=>{
-                if(!tokenState) return;
-                await userService.addUserAsync(user, tokenState.token.props.value);
+            successRegisteredUser={data?.shouldBeAdded ?? false}
+            failedRegisterText={{
+                emailUsed: data?.emailAlreadyUsed ?? false,
+                invalidEmail: data?.validEmail ?? false,
+                invalidPassword: !(data?.validPassword) ?? false,
+                userWasAdded: data?.shouldBeAdded ?? false
             }}
+            onActionAsync={handleAddUser}
         />
     )
 }

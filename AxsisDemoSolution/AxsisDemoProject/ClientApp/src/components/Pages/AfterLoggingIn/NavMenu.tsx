@@ -2,14 +2,13 @@ import * as React from 'react';
 import { Button, Collapse, Container, Nav, Navbar, NavbarBrand, NavItem, NavLink } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { tokenActions, TokenState } from '../../../store/features/tokenReducer';
+import { logout } from '../../hooks/auth/authProvider';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import Modal from '../../reusable/PopUp';
 import './NavMenu.css';
 
 const NavMenu =()=>{
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = React.useState(false);
-    const tokenStore = useAppSelector(state=>state.token);
     const dispatch = useAppDispatch();
 
         return (
@@ -24,8 +23,7 @@ const NavMenu =()=>{
                         <Navbar.Collapse id="basic-navbar-var">
                             <Nav className='me-auto'>
                                 <Nav.Link as={Link} to="/" className="text-dark" >Home</Nav.Link>
-                                <Nav.Link as={Link}  to="/counter" className="text-dark">Users</Nav.Link>
-                                <Nav.Link as={Link}  to="/fetch-data" className="text-dark">Info</Nav.Link>
+                                <Nav.Link as={Link}  to="/users" className="text-dark">Users</Nav.Link>
                                 
                             </Nav>
                             <Nav>
@@ -38,18 +36,19 @@ const NavMenu =()=>{
                 </Navbar>
                 {isConfirmationModalOpen &&
                 <Modal
+                    size="lg"
                     title='Do you want to log out?'
                     body='You will be redirected to the login page'
                     onAccept={()=>{
                         setIsConfirmationModalOpen(false)
-                        dispatch(tokenActions.removeToken());
+                        logout();
                     }}
                     onClose={()=>{
                         setIsConfirmationModalOpen(false)
                     }}
                     buttons={(onAccept, onClose)=>(
                         <>
-                        <Button variant={'primary'} onClick={onAccept}>LogOut</Button>
+                        <Button variant={'primary'} onClick={onAccept}>Log Out</Button>
                         <Button variant={'secondary'} onClick={onClose}>Cancel</Button>
                         </>
                     )}

@@ -4,23 +4,33 @@ using AxsisDemoProject.Controllers.Domain.SessionSection.Ports;
 using AxsisDemoProject.Controllers.Domain.SharedSection.Services;
 using AxsisDemoProject.Controllers.Domain.UserSection.Model;
 using AxsisDemoProject.Controllers.Domain.UserSection.Ports;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
 {
+    [AllowAnonymous]
     public class AuthService
     {
         private readonly IUserRepository _userRepository;
-        private readonly ISessionRepository _sessionRepository;
         private readonly EncryptorService _encryptorService;
-        public AuthService(IUserRepository userRepository, ISessionRepository sessionRepository , EncryptorService encryptorService) {
+        private readonly string _issuer;
+        private readonly string _audience;
+        private readonly byte[] _key;
+        public AuthService(IUserRepository userRepository, EncryptorService encryptorService, string issuer, string audience, byte[] key) {
             _userRepository = userRepository;
             _encryptorService = encryptorService;
-            _sessionRepository = sessionRepository;
+            _issuer = issuer;
+            _audience = audience;
+            _key = key;
         }
 
         /**
@@ -33,62 +43,75 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Service
          * <returns>A token string, supposed to be stored by the client, it will be null if the authentication wasn't
          * sucessful</returns>
          */
-        public async Task<Session> CreateTokenAsync(string email, string password, DateTime tokenDate)
+        public async Task<string> GenerateAccessTokenAsync(string email, string password)
         {
             var userId = await _userRepository.GetIdByEmailAsync(email);
-            var userTryingToLogIn = new User(userId, "", email, password, false, "", DateTime.MinValue, _encryptorService.Encrypt);
-
-            if(await _userRepository.HasAnyAsync(userTryingToLogIn.Email, userTryingToLogIn.EncryptedPassword))
+            var user = new User(userId, "", email, password, false, "", DateTime.Now, _encryptorService.Encrypt);
+            if (await _userRepository.HasAnyAsync(user.Email, user.EncryptedPassword))
             {
-                return (
-                    await _sessionRepository.CreateSessionAsync
-                    (
-                    // this is the session generated token, it will be regenerated each request
-                    _encryptorService.Encrypt($"{userTryingToLogIn.EncryptedPassword}:{tokenDate}")
-                    // this is the session generated token expiration date
-                    , userTryingToLogIn.Id, tokenDate.AddDays(1)
-                    )
-                );
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new[]
+                    {
+                        new Claim("Id", Guid.NewGuid().ToString()),
+                        new Claim(JwtRegisteredClaimNames.Sub, email),
+                        new Claim(JwtRegisteredClaimNames.Email, email),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                    }),
+                    Expires = DateTime.UtcNow.AddMinutes(60),
+                    Issuer = _issuer,
+                    Audience = _audience,
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(_key), SecurityAlgorithms.HmacSha512Signature)
+                };
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                var jwtToken = tokenHandler.WriteToken(token);
+                var stringToken = tokenHandler.WriteToken(token);
+                return stringToken ;
             }
-            else
+            return "";
+        }
+
+        public async Task<string> GenerateRefreshTokenAsync(string email, string password)
+        {
+            var randomNumber = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
             {
-                return null;
+                rng.GetBytes(randomNumber);
             }
+            var refreshToken = Convert.ToBase64String(randomNumber);
+            await _userRepository.GetByEmailAndPasswordAsync(email, password);
+            /*await _userRepository.UpdateRefreshTokenAsync()*/
+
+            return refreshToken;
         }
 
-        public async Task<bool> AuthenticateAsync(string token)
+        public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
-            string tokenWithoutTextBearer = "";
-            if (token.StartsWith("Bearer"))
-                tokenWithoutTextBearer = token.Replace("Bearer", "").Trim();
-            return await _sessionRepository.TokenExistsAsync(tokenWithoutTextBearer);
-        }
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = true,
+                ValidateIssuer = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(_key),
+                ValidateLifetime = false // this will ignore token expiration date
+            };
 
-        public async Task<string> ConsumeTokenAsync(string email, string token, DateTime tokenDate)
-        {
-            var userId = await _userRepository.GetIdByEmailAsync(email);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            SecurityToken securityToken;
+            var principal = tokenHandler
+                                .ValidateToken(token, tokenValidationParameters, out securityToken);
+            var jwtSecurityToken = securityToken as JwtSecurityToken;
 
-            var session = await _sessionRepository.GetSessionAsync(userId, token);
+            if (jwtSecurityToken == null
+                || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase)
+                )
+            {
+                throw new SecurityTokenException("Invalid token");
+            }
 
-            if (session == null) return "";
-
-            var newToken = _encryptorService.Encrypt($"{token}:{tokenDate}");
-
-            return (await _sessionRepository.UpdateSessionAsync(userId, token, newToken)).Token;
-
-        }
-
-        /**
-         * <summary>Expires the given token of the session</summary>
-         * <param name="token">token string</param>
-         * <returns>True if there was a token session in DB, false it there wasn't any
-         * (there is no need to expose this data to the client, it is for unit testing purposes)
-         * </returns>
-         */
-        public async Task<bool> ExpireAsync(string email, string token)
-        {
-            var userId = await _userRepository.GetIdByEmailAsync(email);
-            return await _sessionRepository.ExpireSessionAsync(userId, token);
+            return principal;
         }
 
     }

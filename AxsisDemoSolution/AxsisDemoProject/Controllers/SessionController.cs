@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AxsisDemoProject.Controllers.DataTransferObjects;
 using AxsisDemoProject.Controllers.Domain.UserSection.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -13,60 +14,41 @@ namespace AxsisDemoProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class SessionController : ControllerBase
     {
         private readonly AuthService _authService;
+        private readonly UserService _userService;
         private readonly IMapper _mapper;
-        public SessionController(AuthService authService, IMapper mapper)
+        public SessionController(AuthService authService, UserService userService, IMapper mapper)
         {
             _authService = authService;
+            _userService = userService;
             _mapper = mapper;
-        }
-
-        // GET: api/<SessionController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<SessionController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
         }
 
         // POST api/<SessionController>
         [HttpPost]
-        public async Task<SessionDTO> Post([FromBody] SessionCredentialsDTO sessionCredentialsDTO)
+        public async Task<IActionResult> Post([FromBody] SessionCredentialsDTO sessionCredentialsDTO)
         {
-            var session = await _authService.CreateTokenAsync(sessionCredentialsDTO.Email, sessionCredentialsDTO.Password, DateTime.Now);
-            var sessionDTO = _mapper.Map<SessionDTO>(session);
-            return sessionDTO;
+            var accessToken = await _authService.GenerateAccessTokenAsync(sessionCredentialsDTO.Email, sessionCredentialsDTO.Password);
+
+            var session = new SessionDTO()
+            {
+                AccessToken = accessToken,
+                RefreshToken = null
+            };
+
+            if (session == null) return BadRequest("Invalid client request");
+            return Ok(session);
         }
 
-        [HttpPost("auth")]
-        public async Task<IActionResult> PostAuthenticate()
-        {
-            string accessToken = Request.Headers["Authorization"];
-            if (accessToken.IsNullOrEmpty()) return Unauthorized();
-            if (!await _authService.AuthenticateAsync(accessToken)) return Unauthorized();
-            return Ok();
-        }
-
-        // PUT api/<SessionController>/5
         [HttpPut]
-        public async Task<string> Put([FromBody] SessionDataDTO session)
+        public async Task<IActionResult> Put([FromBody] SessionDTO sessionDTO)
         {
-            return await _authService.ConsumeTokenAsync(session.Email, session.Token, DateTime.Now);
+            throw new NotImplementedException();
         }
 
-        // DELETE api/<SessionController>/5
-        [HttpDelete]
-        public async Task<bool> Delete([FromBody] SessionDataDTO session)
-        {
-            return await _authService.ExpireAsync(session.Email, session.Token);
-        }
+
     }
 }

@@ -13,6 +13,7 @@ const DeleteUserModal = (props: DeleteUserModalProps)=>{
     return (
         <>
             <Modal
+                size="sm"
                 title="Delete user"
                 body={<><p>Are you sure you want to delete this user?</p></>}
                 buttons={(onAccept, onClose) =>{

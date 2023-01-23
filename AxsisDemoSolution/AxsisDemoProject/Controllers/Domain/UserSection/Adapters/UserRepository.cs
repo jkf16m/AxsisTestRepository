@@ -5,15 +5,19 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using AxsisDemoProject.Controllers.Domain.SharedSection.Services;
+using System;
 
 namespace AxsisDemoProject.Controllers.Domain.UserSection.Adapters
 {
     public class UserRepository : IUserRepository
     {
         private readonly AxsisDemoContext _axsisDemoContext;
-        public UserRepository(AxsisDemoContext axsisDemoContext)
+        private readonly EncryptorService _encryptorService;
+        public UserRepository(AxsisDemoContext axsisDemoContext, EncryptorService encryptorService)
         {
             _axsisDemoContext = axsisDemoContext;
+            _encryptorService = encryptorService;
         }
 
         public async Task AddAsync(User newUser)
@@ -39,6 +43,14 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Adapters
         public async Task<IEnumerable<User>> GetAllAsync()
         {
             return await _axsisDemoContext.Users.AsNoTracking().ToListAsync();
+        }
+
+        public async Task<User> GetByEmailAndPasswordAsync(string email, string password)
+        {
+            var user = await _axsisDemoContext.Users.AsNoTracking().FirstOrDefaultAsync(q => q.Email == email);
+            var tempUser = new User(0, "", email, password, false, "", DateTime.Now, _encryptorService.Encrypt);
+            var encryptedPassword = tempUser.EncryptedPassword;
+            return await _axsisDemoContext.Users.FirstOrDefaultAsync(q => q.Email == email && q.Password == encryptedPassword);
         }
 
         public async Task<User> GetByIdAsync(int id)
@@ -86,5 +98,7 @@ namespace AxsisDemoProject.Controllers.Domain.UserSection.Adapters
 
             await _axsisDemoContext.SaveChangesAsync();
         }
+
+        
     }
 }

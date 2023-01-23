@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Route, Routes } from 'react-router';
+import { Navigate, Route, Routes } from 'react-router';
 import Layout from './components/Pages/AfterLoggingIn/Layout';
-import Home from './components/Pages/AfterLoggingIn/Home';
+import UsersScreen from './components/Pages/AfterLoggingIn/Home';
 import './custom.css'
 import Login from './components/Pages/Login';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,55 +10,34 @@ import AnonymousLayout from './components/Pages/AnonymousLayout';
 import { Token } from './services/entities/Token';
 import NavMenu from './components/Pages/AfterLoggingIn/NavMenu';
 import { useAppDispatch, useAppSelector } from './components/hooks/redux';
-import { tokenActions } from './store/features/tokenReducer';
+import { login, useAuth } from './components/hooks/auth/authProvider';
+import QueryUsers from './components/Pages/AfterLoggingIn/QueryUsers/QueryUsers';
+import AddUser from './components/Pages/AfterLoggingIn/AddUser/AddUser';
 
 const App = () => {
-    const tokenState = useAppSelector(state=>state.token);
     const dispatch = useAppDispatch();
-    
-    const [loggedIn, setLoggedIn] = React.useState(false);
-    React.useEffect(()=>{
-        const getToken = async ()=>{
-            if(!tokenState) return;
-            if(!tokenState.token) return;
-                let authResult : boolean;
-            if(tokenState.token.props.value){
-                authResult = await authService.tryAuthenticationAsync(tokenState.token.props.value);
-            }else{
-                authResult = false;
-            }
-            setLoggedIn(authResult);
-        };
-        getToken();
-        
-    },[tokenState])
+    const [logged, session] = useAuth();
 
     return(
     <>
         
-        {loggedIn&&<NavMenu></NavMenu>}
+        {logged && (<NavMenu></NavMenu>)}
         <Routes>
             <>
             
-            {loggedIn ?
+            {logged ?
                 <>
-                    <Route path='/' element={<Layout><Home/></Layout>} />
-                    <Route path='/counter' element={<></>} />
-                    <Route path='/fetch-data/:startDateIndex?' element={<></>} />
+                    <Route path='/home' element={<Layout><UsersScreen/></Layout>} />
+                    <Route path='/users' element={<Layout><UsersScreen/></Layout>} />
+                    <Route path='/*' element={<Navigate to="/home" replace></Navigate>} />
                 </>
                 :
                     <Route path='/*' element={<AnonymousLayout><Login
                         loginAction={
-                            (token:Token)=>dispatch(
-                                tokenActions.updateToken(
-                                    {
-                                        failedLogin: token ? false : true,
-                                        token: new Token({...token.props})
-                                    }
-                                )
-                            )
+                            (token)=>{
+                                login({accessToken: token, refreshToken: ""});
+                            }
                         }
-                        failedLogin={tokenState ? tokenState.failedLogin : false}
                     /></AnonymousLayout>} />
             }
             </>

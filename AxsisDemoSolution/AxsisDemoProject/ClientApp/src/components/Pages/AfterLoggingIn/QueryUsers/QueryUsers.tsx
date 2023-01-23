@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Button, Form, Table } from "react-bootstrap";
 import { authService } from "../../../../services/authService";
 import userService from "../../../../services/userService";
@@ -10,6 +10,7 @@ import EditUserModal from "./EditUserModal";
 import DeleteUserModal from "./DeleteUserModal";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store/app/store";
+import { useDeleteUserMutation, useGetUsersQuery, useUpdateUserMutation } from "../../../../store/features/API/userApi";
 
 
 const QueryUsers = ()=>{
@@ -19,22 +20,37 @@ const QueryUsers = ()=>{
     const [userToEdit, setUserToEdit] = React.useState(new User());
     const [userToDelete, setUserToDelete] = React.useState(new User());
 
+    const {data, refetch} = useGetUsersQuery();
+
+    const [triggerUpdateUser, {data: dataUpdateUser}] = useUpdateUserMutation();
+    const [triggerDeleteUser, {data: dataDeleteUser}] = useDeleteUserMutation();
+
     const userCollectionStore = useSelector((state:RootState)=>state.userCollection)
+
+    const handleUserDelete = useCallback(()=>{
+        triggerDeleteUser(userToDelete.props.id);
+        setShowDeleteModal(false);
+    },[userToDelete, showDeleteModal])
+
+    const handleDeleteModalClose = useCallback( ()=>{setShowDeleteModal(false);} , [showDeleteModal])
+
     return (
         <>
-            <Button onClick={()=>{throw new Error("not implemented")}}>Update data</Button>
+            <Button onClick={()=>{refetch()}}>Reload data</Button>
             <QueryUsersLayout
                 table={
                     <InteractiveTable
-                        objects={userCollectionStore?.userCollection ?? []}
+                        objects={data ?? []}
                         onEdit={(user) =>{setUserToEdit(user); setShowEditModal(true)}}
                         onDelete={(user) =>{setUserToDelete(user); setShowDeleteModal(true)}}
+                        showDeleteButton={(user)=>(user.props.status)? true: false}
                     />
                 }
                 editUserModal={
                     (showEditModal ? <EditUserModal user={userToEdit}
                         onClose={()=>{setShowEditModal(false);}}
                         onAccept={(user)=>{
+                            triggerUpdateUser(user.props);
                             setShowEditModal(false);
                             //await userService.updateUserAsync(userToEdit);
                         }}
@@ -43,8 +59,8 @@ const QueryUsers = ()=>{
                 }
                 deleteUserModal={
                     (showDeleteModal ? <DeleteUserModal user={userToDelete}
-                        onClose={()=>{setShowDeleteModal(false);}}
-                        onAccept={()=>{setShowDeleteModal(false);}}
+                        onClose={handleDeleteModalClose}
+                        onAccept={handleUserDelete}
                     /> : <> </>)
                 }
             />

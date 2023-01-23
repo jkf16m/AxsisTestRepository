@@ -17,6 +17,7 @@ namespace AxsisDemoProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     { 
         private readonly UserService _userService;
@@ -32,9 +33,7 @@ namespace AxsisDemoProject.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            string accessToken = Request.Headers["Authorization"];
-            if (!await _authService.AuthenticateAsync(accessToken)) return Unauthorized();
-
+            
             var users = await _userService.GetUsersAsync();
 
             var usersDTO = users.Select(q =>
@@ -51,9 +50,7 @@ namespace AxsisDemoProject.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            string accessToken = Request.Headers["Authorization"];
-            if (!await _authService.AuthenticateAsync(accessToken)) return Unauthorized();
-
+            
 
             var user = await _userService.GetUserByIdAsync(id);
 
@@ -66,9 +63,7 @@ namespace AxsisDemoProject.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] UserDTO user)
         {
-            string accessToken = Request.Headers["Authorization"];
-            if (!await _authService.AuthenticateAsync(accessToken)) return Unauthorized();
-
+            
             var userInstance = _mapper.Map<User>(user);
             var addingUserResult = await _userService.AddNewUserAsync(userInstance);
             var addingUserResultDTO = _mapper.Map<AddingUserResultDTO>(addingUserResult);
@@ -79,9 +74,7 @@ namespace AxsisDemoProject.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] UserUpdateDTO user)
         {
-            string accessToken = Request.Headers["Authorization"];
-            if (!await _authService.AuthenticateAsync(accessToken)) return Unauthorized();
-
+            
             user.Id = id;
 
             var userInstance = _mapper.Map<User>(user);
@@ -97,9 +90,7 @@ namespace AxsisDemoProject.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            string accessToken = Request.Headers["Authorization"];
-            if (!await _authService.AuthenticateAsync(accessToken)) return Unauthorized();
-
+            
             return Ok(await _userService.DisableUserAsync(id));
         }
     }

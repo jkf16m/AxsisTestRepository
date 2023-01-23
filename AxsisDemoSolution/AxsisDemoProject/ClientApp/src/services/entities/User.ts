@@ -1,14 +1,14 @@
 import { Entity, Props } from "../../lib/interfaces";
 
 type SexType = ''|'male'|'female';
-interface UserProps{
+export interface UserProps{
     id: number;
     email: string;
     name: string;
     password: string;
     status: boolean;
     sex: string;
-    created_at?: Date;
+    creationDate?: Date;
 }
 export type UserPropsKey = keyof UserProps;
 export class User implements Entity{
@@ -21,12 +21,13 @@ export class User implements Entity{
 
 
 
-interface UserUpdateInfoProps{
+export interface UserUpdateInfoProps{
+    id: number;
     name: string;
-    password: string;
+    currentEmail: string;
+    currentPassword: string;
     newPassword: string;
     sex: string;
-    email: string;
 }
 
 export class UserUpdateInfo{

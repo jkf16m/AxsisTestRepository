@@ -11,11 +11,11 @@ interface QueryUsersLayoutProps {
 const QueryUsersLayout = (props:QueryUsersLayoutProps) =>{
 
     return (
-        <>
+        <div style={{overflowX: 'auto'}}>
             {props.table}
             {props.editUserModal}
             {props.deleteUserModal}
-        </>
+        </div>
     )
 }
 

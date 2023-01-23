@@ -1,19 +1,19 @@
 import { configureStore } from "@reduxjs/toolkit";
-import {sessionApi, sessionApiReducer} from "../features/API/sessionApi";
-import tokenReducer from "../features/tokenReducer";
+import { userApi } from "../features/API/userApi";
 
 import userCollectionReducer from "../features/userCollectionReducer";
 
 // Get the application-wide store instance, prepopulating with state from the server where available.
 export const store = configureStore({
     reducer: {
-        [sessionApi.reducerPath]: sessionApi.reducer,
-        token: tokenReducer,
+        [userApi.reducerPath]: userApi.reducer,
         userCollection: userCollectionReducer,
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware()
-        .concat(sessionApi.middleware)
+        getDefaultMiddleware({
+            serializableCheck: false,
+        })
+            .concat(userApi.middleware)
     ,
 });
 
